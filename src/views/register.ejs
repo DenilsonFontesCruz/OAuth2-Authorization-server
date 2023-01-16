@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10 red;
+            padding: 2rem 5rem;
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+   
+        input {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <p class="title">Register</p>
+        <form  action="/register" method="post"> 
+            <label for="email">E-mail</label>
+            <input id="email" type="email">
+            <label for="password">Password</label>
+            <input id="password" type="text">
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
