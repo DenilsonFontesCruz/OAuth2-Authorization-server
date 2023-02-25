@@ -7,7 +7,7 @@ interface EmailProps {
   email: string;
 }
 
-class InvalidEmailFormatError extends Result<DomainError> {
+export class InvalidEmailFormatError extends Result<DomainError> {
   private constructor(message: string) {
     super(false, {
       message,

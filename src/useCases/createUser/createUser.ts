@@ -1,6 +1,7 @@
 import { Email } from '../../domain/user/email';
 import { Name } from '../../domain/user/name';
 import { Password } from '../../domain/user/password';
+import { User } from '../../domain/user/user';
 import { IUserRepository } from '../../repository/IUserRepositorory';
 import {
   Fail,
@@ -12,7 +13,11 @@ import {
 } from '../../shared/core/result';
 import { UseCase } from '../../shared/core/useCase';
 import { DomainError } from '../../shared/domain/domainError';
-import { AlreadyRegisteredUserError, UnexpectedError } from './createUserError';
+import {
+  AlreadyRegisteredUserError,
+  UnexpectedError,
+  UserDetailsError,
+} from './createUserError';
 
 interface CreateUserInput {
   name: string;
@@ -21,8 +26,8 @@ interface CreateUserInput {
 }
 
 export type CreateUserResponse = Response<
-  UnexpectedError | AlreadyRegisteredUserError,
-  Result<string>
+  UnexpectedError | AlreadyRegisteredUserError | UserDetailsError,
+  Result<any>
 >;
 
 export class CreateUser
@@ -52,9 +57,28 @@ export class CreateUser
     ]);
 
     if (combinedResponse.isFail()) {
-      return combinedResponse;
+      return fail(
+        UserDetailsError.create('User invalid Details', combinedResponse),
+      );
     }
 
-    return sucess(Result.ok<string>('User Created'));
+    const userOrError = User.create({
+      name: nameOrError.value.getValue() as Name,
+      email: emailOrError.value.getValue() as Email,
+      password: passwordOrError.value.getValue() as Password,
+      permissions: [],
+    });
+
+    if (userOrError.isFail()) {
+      return userOrError;
+    }
+
+    try {
+      await this.userRepo.save(userOrError.value.getValue() as User);
+
+      return sucess(Result.ok<string>('User Created'));
+    } catch (error) {
+      return fail(UnexpectedError.create('Error on createUser', error));
+    }
   }
 }

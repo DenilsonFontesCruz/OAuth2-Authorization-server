@@ -5,14 +5,16 @@ import { Entity } from '../../shared/domain/entity';
 import { fail, Response, Result, sucess } from '../../shared/core/result';
 import { Guard } from '../../shared/core/guard';
 import { DomainError } from '../../shared/domain/domainError';
+import { Permission } from './permission';
 
 interface UserProps {
   name: Name;
   email: Email;
   password: Password;
+  permissions?: Permission[];
 }
 
-class UserDetailsNullError extends Result<DomainError> {
+export class UserDetailsNullError extends Result<DomainError> {
   private constructor(message: string) {
     super(false, {
       message,
@@ -23,6 +25,7 @@ class UserDetailsNullError extends Result<DomainError> {
     return new UserDetailsNullError(message);
   }
 }
+
 
 type UserResponse = Response<UserDetailsNullError, Result<User>>;
 

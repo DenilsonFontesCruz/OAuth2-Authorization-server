@@ -11,6 +11,10 @@ export class UserRepositoryTest implements IUserRepository {
     this.timesSaveCalled = 0;
   }
 
+  getTimesSaveCalled(): number {
+    return this.timesSaveCalled;
+  }
+
   async save(user: User): Promise<any> {
     this.users.push(user);
     this.timesSaveCalled++;
@@ -18,7 +22,7 @@ export class UserRepositoryTest implements IUserRepository {
 
   async findByEmail(email: string): Promise<Nothing | User> {
     const user = this.users.find((i) => {
-      i.getEmail().getValue() === email;
+      return i.getEmail().getValue() === email;
     });
 
     if (!user) {
