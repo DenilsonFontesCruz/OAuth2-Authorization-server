@@ -31,11 +31,11 @@ export class Password extends ValueObject<PasswordProps> {
   }
 
   private static isPasswordFormatValid(name: string): boolean {
-    const emailRegex = new RegExp(
+    const passwordRegex = new RegExp(
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9]/,
     );
 
-    return emailRegex.test(name);
+    return passwordRegex.test(name);
   }
 
   public static create(password: string): PasswordResponse {

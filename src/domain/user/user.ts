@@ -6,11 +6,12 @@ import { fail, Response, Result, sucess } from '../../shared/core/result';
 import { Guard } from '../../shared/core/guard';
 import { DomainError } from '../../shared/domain/domainError';
 import { Permission } from './permission';
+import { HashPassword } from './hashPassword';
 
 interface UserProps {
   name: Name;
   email: Email;
-  password: Password;
+  password: HashPassword;
   permissions?: Permission[];
 }
 
@@ -26,7 +27,6 @@ export class UserDetailsNullError extends Result<DomainError> {
   }
 }
 
-
 type UserResponse = Response<UserDetailsNullError, Result<User>>;
 
 export class User extends Entity<UserProps> {
@@ -40,6 +40,10 @@ export class User extends Entity<UserProps> {
 
   getEmail() {
     return this.props.email;
+  }
+
+  getPassword() {
+    return this.props.password;
   }
 
   public static create(userProps: UserProps): UserResponse {

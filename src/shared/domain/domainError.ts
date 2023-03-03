@@ -1,4 +1,4 @@
 export interface DomainError {
-    message: string;
-    error?: any;
+  message: string;
+  error?: any;
 }

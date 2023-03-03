@@ -105,3 +105,4 @@ export const fail = <F, S>(l: F): Response<F, S> => {
 export const sucess = <F, S>(a: S): Response<F, S> => {
   return new Sucess<F, S>(a);
 };
+

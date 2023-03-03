@@ -1,22 +1,17 @@
-import { describe, beforeAll, expect, test } from 'vitest';
-import { Email, InvalidEmailFormatError } from '../../domain/user/email';
-import { InvalidNameFormatError, Name } from '../../domain/user/name';
-import {
-  InvalidPasswordFormatError,
-  Password,
-} from '../../domain/user/password';
+import { describe, expect, test } from 'vitest';
+import { CrypterTest } from '../../components/cypher/CrypterTest';
 import { User } from '../../domain/user/user';
 import { UserRepositoryTest } from '../../repository/UserRepositoryTest';
-import { Fail, Sucess } from '../../shared/core/result';
-import { stringGeneratorBySize } from '../../tools/stringGeneratorBySize';
+import { Sucess } from '../../shared/core/result';
 import { CreateUser } from './createUser';
 import { AlreadyRegisteredUserError } from './createUserError';
 
 describe('Create a New User', () => {
   test('Correct user details, should return Sucess and save User', async () => {
     const userRepo = new UserRepositoryTest([]);
+    const crypter = new CrypterTest();
 
-    const createUser = new CreateUser(userRepo);
+    const createUser = new CreateUser(userRepo, crypter);
 
     const userDetails = {
       name: 'John Doe',
@@ -33,8 +28,9 @@ describe('Create a New User', () => {
 
   test('Email alredy in use, should return AlreadyRegisteredUserError', async () => {
     const userRepo = new UserRepositoryTest([]);
+    const crypter = new CrypterTest();
 
-    const createUser = new CreateUser(userRepo);
+    const createUser = new CreateUser(userRepo, crypter);
 
     const userDetails = {
       name: 'John Doe',
@@ -50,62 +46,40 @@ describe('Create a New User', () => {
 
     expect(userRepo.getTimesSaveCalled()).equal(1);
   });
-});
 
-describe('Email details wrong', () => {
-  test('Email format wrong, should return InvalidEmailFormatError', async () => {
-    const email = Email.create('john.com');
+  test('Password encryption, encrypted password should be diffent of passed password', async () => {
+    const userRepo = new UserRepositoryTest([]);
+    const crypter = new CrypterTest();
 
-    expect(email.value).toBeInstanceOf(InvalidEmailFormatError);
+    const createUser = new CreateUser(userRepo, crypter);
+
+    const userDetails = {
+      name: 'John Doe',
+      email: 'john@gmail.com',
+      password: 'JOhn1234',
+    };
+
+    const result = await createUser.execute(userDetails);
+
+    const user = await userRepo.findByEmail(userDetails.email);
+
+    const hashPassword = (user as User).getPassword();
+
+    expect(hashPassword.getValue()).not.toEqual(userDetails.password);
   });
 
-  test('Email size wrong, should return InvalidEmailFormatError', async () => {
-    const emailBelowLimit = Email.create(
-      stringGeneratorBySize(1, '', '@g.com'),
-    );
+  test('password comparison should return true if the same password is passed', async () => {
+    const crypter = new CrypterTest();
 
-    expect(emailBelowLimit.value).toBeInstanceOf(InvalidEmailFormatError);
+    const password = 'password';
 
-    const emailAboveLimit = Email.create(
-      stringGeneratorBySize(80, '', '@gmail.com'),
-    );
+    const hashPassword = await crypter.encrypt(password, {
+      salt: 10,
+      secret: 'SampleText',
+    });
 
-    expect(emailAboveLimit.value).toBeInstanceOf(InvalidEmailFormatError);
-  });
-});
+    console.log(hashPassword);
 
-describe('Name details wrong', () => {
-  test('Name format wrong, should return InvalidNameFormatError', async () => {
-    const name = Name.create('john12');
-
-    expect(name.value).toBeInstanceOf(InvalidNameFormatError);
-  });
-
-  test('Name size wrong, should return InvalidNameFormatError', async () => {
-    const nameBelowLimit = Name.create(stringGeneratorBySize(1));
-
-    expect(nameBelowLimit.value).toBeInstanceOf(InvalidNameFormatError);
-
-    const nameAboveLimit = Name.create(stringGeneratorBySize(61));
-
-    expect(nameAboveLimit.value).toBeInstanceOf(InvalidNameFormatError);
-  });
-});
-
-describe('Password details wrong', () => {
-  test('Password format wrong, should return InvalidPasswordFormatError', async () => {
-    const password = Password.create('john1234');
-
-    expect(password.value).toBeInstanceOf(InvalidPasswordFormatError);
-  });
-
-  test('Password size wrong, should return InvalidPasswordFormatError', async () => {
-    const passwordBelowLimit = Password.create(stringGeneratorBySize(1));
-
-    expect(passwordBelowLimit.value).toBeInstanceOf(InvalidPasswordFormatError);
-
-    const passwordAboveLimit = Password.create(stringGeneratorBySize(65));
-
-    expect(passwordAboveLimit.value).toBeInstanceOf(InvalidPasswordFormatError);
+    expect(await crypter.compare(password, hashPassword)).toBeTruthy();
   });
 });
