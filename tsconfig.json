@@ -11,6 +11,9 @@
     "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strict": true
   }
 }
