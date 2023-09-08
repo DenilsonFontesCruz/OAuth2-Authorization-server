@@ -5,11 +5,11 @@ import { AggregateRoot } from '../../../../Domain-Driven-Design-Types/domain/Agg
 import { DomainError } from '../../../../Domain-Driven-Design-Types/domain/DomainError';
 import { UserCreatedEvent } from './events/UserCreatedEvent';
 import { Email } from './valueObjects/Email';
-import { Name } from './valueObjects/Name';
+import { Nickname } from './valueObjects/Nickname';
 
 export interface UserProps {
   id: Identifier;
-  name: Name;
+  nickname: Nickname;
   email: Email;
   password: string;
 
@@ -37,8 +37,12 @@ export class User extends AggregateRoot<UserProps> {
     super(props, props.id);
   }
 
-  getName(): Name {
-    return this.props.name;
+  getId(): Identifier {
+    return this.props.id;
+  }
+
+  getNickname(): Nickname {
+    return this.props.nickname;
   }
 
   getEmail(): Email {

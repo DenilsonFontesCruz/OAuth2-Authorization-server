@@ -39,7 +39,7 @@ export class Result<ValueT> {
     if (!this.isFailure) {
       console.log(this.error);
       throw new Error(
-        'Can´t get the value of an error result. Use ´errorValue´ instead.',
+        'Can´t get the error of an value result. Use ´getValue´ instead.',
       );
     }
 
@@ -54,10 +54,10 @@ export class Result<ValueT> {
     return new Result<U>(false, error);
   }
 
-  public static combine<T>(results: Result<T>[]): Result<T> {
+  public static verifyError<T>(results: Result<T>[]): Result<T> {
     for (const result of results) {
       if (result.isFailure) return result;
     }
-    return Result.ok<T>();
+    return Result.ok();
   }
 }

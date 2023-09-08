@@ -1,7 +1,7 @@
 
 # Micro-Service de autorização
 
-## Responsábilidades:
+## Responsabilidades:
 
     * Criação e manipulação dos dados de autorização do Usuário
 

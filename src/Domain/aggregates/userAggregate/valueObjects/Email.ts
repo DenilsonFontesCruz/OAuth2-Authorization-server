@@ -21,7 +21,7 @@ export class InvalidEmailFormatError extends Result<DomainError> {
   }
 }
 
-type EmailResponse = Result<Email | Result<DomainError>>;
+export type EmailResponse = Result<Email | Result<DomainError>>;
 
 export class Email extends ValueObject<EmailProps> {
   private constructor(props: EmailProps) {

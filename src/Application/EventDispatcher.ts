@@ -5,7 +5,7 @@ import { DomainEvent } from '../../Domain-Driven-Design-Types/domain/DomainEvent
 export class EventDispatcher implements IEventDispatcher {
   private eventHandlers: { [eventName: string]: IEventHandler[] } = {};
 
-  getEventHandlers() {
+  getEventHandlers(): { [eventName: string]: IEventHandler[] } {
     return this.eventHandlers;
   }
 

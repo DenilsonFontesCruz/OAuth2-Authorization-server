@@ -21,7 +21,7 @@ export class InvalidPasswordFormatError extends Result<DomainError> {
   }
 }
 
-type PasswordResponse = Result<Password | Result<DomainError>>;
+export type PasswordResponse = Result<Password | Result<DomainError>>;
 
 export class Password extends ValueObject<PasswordProps> {
   private constructor(props: PasswordProps) {
@@ -49,10 +49,10 @@ export class Password extends ValueObject<PasswordProps> {
       );
     }
 
-    if (!Checker.stringInRange(password, 3, 64)) {
+    if (!Checker.stringInRange(password, 8, 64)) {
       return Result.fail(
         InvalidPasswordFormatError.create(
-          'Password must have a minimum of 3 and a maximum of 64 characters',
+          'Password must have a minimum of 8 and a maximum of 64 characters',
         ),
       );
     }

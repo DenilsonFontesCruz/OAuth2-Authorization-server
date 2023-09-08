@@ -2,9 +2,15 @@ import bcrypt from 'bcrypt';
 import { IHasher } from '../tools/IHasher';
 
 export class Hasher implements IHasher {
-  async encrypt(text: string, salt: number): Promise<string> {
+  readonly salt: number;
+
+  constructor(salt: number) {
+    this.salt = salt;
+  }
+
+  async encrypt(text: string): Promise<string> {
     try {
-      return await bcrypt.hash(text, salt);
+      return await bcrypt.hash(text, this.salt);
     } catch (error) {
       console.error(error);
       throw error;

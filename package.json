@@ -1,5 +1,5 @@
 {
-  "name": "OAuth2-Authorization-server-SOLID",
+  "name": "oauth2-authorization",
   "version": "1.0.0",
   "main": "./server.ts",
   "repository": "https://github.com/DenilsonFontesCruz/OAuth2-Authorization-server.git",
@@ -8,17 +8,10 @@
   "scripts": {
     "dev": "nodemon ./server.ts",
     "start": "node ./server.ts",
-<<<<<<< Updated upstream
-    "test": "vitest"
-  },
-  "dependencies": {
-=======
-    "test": "vitest --ui",
-    "lint": "eslint --ext .ts --ignore-path .eslintignore --cache ./src"
+    "test": "vitest --ui"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
->>>>>>> Stashed changes
     "body-parser": "^1.20.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.48.0",
@@ -29,7 +22,7 @@
     "ts-node": "^10.9.1",
     "typescript": "*",
     "uuid": "^9.0.0",
-    "vitest": "^0.28.4"
+    "vitest": "^0.34.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -40,13 +33,9 @@
     "@types/node": "^18.11.19",
     "@types/nodemailer": "^6.4.7",
     "@types/redis": "^4.0.11",
-<<<<<<< Updated upstream
+    "@types/uuid": "^9.0.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
-=======
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "@vitest/ui": "^0.29.8",
->>>>>>> Stashed changes
+    "@vitest/ui": "^0.34.3",
     "eslint-config-standard-with-typescript": "^34.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
