@@ -1,9 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Hasher } from '../../Application/services/Hasher';
-import {
-  InvalidNicknameFormatError,
-  Nickname,
-} from '../../Domain/aggregates/userAggregate/valueObjects/Nickname';
+import { Hasher } from '../../Infrastructure/services/Hasher';
 import {
   Email,
   InvalidEmailFormatError,
@@ -12,9 +8,14 @@ import {
   InvalidPasswordFormatError,
   Password,
 } from '../../Domain/aggregates/userAggregate/valueObjects/Password';
-import { stringGeneratorBySize } from '../tools/stringGeneratorBySize';
-import { CreateUser } from '../../Application/useCases/CreateUser';
+import { stringGeneratorBySize } from '../Mock/tools/stringGeneratorBySize';
+import {
+  CreateUser,
+  EmailAlredyRegisteredError,
+  IdAlredyRegisteredError,
+} from '../../Application/useCases/CreateUser';
 import { TUserRepository } from '../Mock/Repositories/TUserRepository';
+import { createMockUser } from '../Mock/tools/CreateMockUser';
 
 describe('Services tests', () => {
   test('Hash', async () => {
@@ -26,49 +27,6 @@ describe('Services tests', () => {
 
     expect(hashPlaintext).not.instanceOf(Error);
     expect(hashPlaintext).not.equal(plaintext);
-  });
-});
-
-describe('Nickname validation tests', () => {
-  test('Correct Nickname', () => {
-    const text = 'John';
-    const result = Nickname.create(text);
-    const nickname = result.getValue();
-
-    expect(result.isSuccess).toBeTruthy();
-    expect(nickname?.getValue()).equal(text);
-  });
-  test('Small Nickname', () => {
-    const text = stringGeneratorBySize(2);
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Big Nickname', () => {
-    const text = stringGeneratorBySize(61);
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Null Nickname', () => {
-    const text = '';
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Special characters in Nickname', () => {
-    const text = 'J@hn';
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
   });
 });
 
@@ -151,18 +109,49 @@ describe('Password validation tests', () => {
 });
 
 describe('UseCase test', () => {
+  const hasher = new Hasher(1);
+
   test('Correct scenario', async () => {
-    const hasher = new Hasher(1);
     const userRepo = new TUserRepository([]);
     const createUser = new CreateUser(userRepo, hasher);
 
     const result = await createUser.execute({
-      nickname: 'john',
       email: 'john@gmail.com',
       password: 'John1234',
     });
 
-    expect(result).toBeUndefined();
+    expect(result.isSuccess).toBeTruthy();
     expect(await userRepo.getSaveCount()).equal(1);
+  });
+
+  test('Email Already in use', async () => {
+    const userList = await createMockUser(1);
+    const userRepo = new TUserRepository(userList);
+    const createUser = new CreateUser(userRepo, hasher);
+
+    const result = await createUser.execute({
+      email: userList[0].getEmail().getValue(),
+      password: 'John1234',
+    });
+
+    expect(result.isFailure).toBeTruthy();
+    expect(result).instanceOf(EmailAlredyRegisteredError);
+    expect(await userRepo.getSaveCount()).equal(0);
+  });
+
+  test('Id Already in use', async () => {
+    const userList = await createMockUser(1);
+    const userRepo = new TUserRepository(userList);
+    const createUser = new CreateUser(userRepo, hasher);
+
+    const result = await createUser.execute({
+      id: userList[0].id,
+      email: 'henry@gmail.com',
+      password: 'Henry1234',
+    });
+
+    expect(result.isFailure).toBeTruthy();
+    expect(result).instanceOf(IdAlredyRegisteredError);
+    expect(await userRepo.getSaveCount()).equal(0);
   });
 });

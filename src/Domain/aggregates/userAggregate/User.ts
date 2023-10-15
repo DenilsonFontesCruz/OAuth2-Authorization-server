@@ -5,11 +5,9 @@ import { AggregateRoot } from '../../../../Domain-Driven-Design-Types/domain/Agg
 import { DomainError } from '../../../../Domain-Driven-Design-Types/domain/DomainError';
 import { UserCreatedEvent } from './events/UserCreatedEvent';
 import { Email } from './valueObjects/Email';
-import { Nickname } from './valueObjects/Nickname';
 
 export interface UserProps {
   id: Identifier;
-  nickname: Nickname;
   email: Email;
   password: string;
 
@@ -35,14 +33,6 @@ type UserResponse = Result<User | Result<DomainError>>;
 export class User extends AggregateRoot<UserProps> {
   private constructor(props: UserProps) {
     super(props, props.id);
-  }
-
-  getId(): Identifier {
-    return this.props.id;
-  }
-
-  getNickname(): Nickname {
-    return this.props.nickname;
   }
 
   getEmail(): Email {

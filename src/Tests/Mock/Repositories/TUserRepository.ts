@@ -32,7 +32,7 @@ export class TUserRepository implements IUserRepository {
 
   async findById(id: Identifier): Promise<Nothing | User> {
     const user = this.users.find((user) => {
-      return user.getId() === id;
+      return user.id === id;
     });
 
     if (!user) {
