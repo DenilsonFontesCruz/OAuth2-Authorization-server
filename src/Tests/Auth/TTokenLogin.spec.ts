@@ -1,10 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import {
-  ClientLogin,
-  ClientLoginOutputBody,
-  EmailNotFoundError,
-  PasswordIncorrectError,
-} from '../../Application/useCases/ClientLogin';
+import { TokenLoginOutputBody } from '../../Application/useCases/TokenLogin';
 import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { TCacheManager } from '../Mock/Services/TCacheManager';
@@ -34,7 +29,7 @@ describe('Token Login', async () => {
     expect(result.getValue()).not.toBeUndefined();
 
     const { acessToken, refreshToken } =
-      result.getValue() as ClientLoginOutputBody;
+      result.getValue() as TokenLoginOutputBody;
 
     expect(acessToken).not.toBeUndefined();
     expect(refreshToken).not.toBeUndefined();

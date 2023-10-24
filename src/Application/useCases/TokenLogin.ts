@@ -2,8 +2,6 @@ import { ClientErrorCodes } from '../../../Domain-Driven-Design-Types/ResponseCo
 import { Result } from '../../../Domain-Driven-Design-Types/Result';
 import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
 import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
-import { IUserRepository } from '../repositories/IUserRepository';
-import { IHasher } from '../../Infrastructure/IServices/IHasher';
 import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Checker } from '../../../Domain-Driven-Design-Types/Checker';

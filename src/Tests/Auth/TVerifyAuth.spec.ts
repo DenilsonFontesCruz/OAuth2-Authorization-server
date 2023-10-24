@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { Hasher } from '../../Infrastructure/services/Hasher';
 import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import {
