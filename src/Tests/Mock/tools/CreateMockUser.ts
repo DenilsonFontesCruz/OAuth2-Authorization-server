@@ -1,4 +1,4 @@
-import { IHasher } from '../../../Application/IServices/IHasher';
+import { IHasher } from '../../../Infrastructure/IServices/IHasher';
 import { User } from '../../../Domain/aggregates/userAggregate/User';
 import { Email } from '../../../Domain/aggregates/userAggregate/valueObjects/Email';
 

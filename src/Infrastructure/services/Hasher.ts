@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { IHasher } from '../../Application/IServices/IHasher';
+import { IHasher } from '../IServices/IHasher';
 
 export class Hasher implements IHasher {
   readonly salt: number;

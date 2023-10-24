@@ -8,7 +8,7 @@ import { User } from '../../Domain/aggregates/userAggregate/User';
 import { Email } from '../../Domain/aggregates/userAggregate/valueObjects/Email';
 import { Password } from '../../Domain/aggregates/userAggregate/valueObjects/Password';
 import { IUserRepository } from '../repositories/IUserRepository';
-import { IHasher } from '../IServices/IHasher';
+import { IHasher } from '../../Infrastructure/IServices/IHasher';
 
 export class EmailAlredyRegisteredError extends Result<DomainError> {
   private constructor(message: string) {

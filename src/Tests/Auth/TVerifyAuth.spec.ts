@@ -3,22 +3,22 @@ import { Hasher } from '../../Infrastructure/services/Hasher';
 import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import {
-  GetAuth,
+  VerifyAuth,
   TokenExpired,
   TokenInvalid,
-} from '../../Application/useCases/GetAuth';
+} from '../../Application/useCases/VerifyAuth';
 import { TCacheManager } from '../Mock/Services/TCacheManager';
 import { sleep } from '../Mock/tools/SleepFunction';
 
-describe('Get Auth', async () => {
+describe('Verify Auth', async () => {
   const jwtManager = new JwtManager<Identifier>('secret');
   const cacheManager = new TCacheManager([]);
-  const getAuth = new GetAuth(cacheManager, jwtManager);
+  const verifyAuth = new VerifyAuth(cacheManager, jwtManager);
 
   test('Valid token', async () => {
     const token = jwtManager.sign('ID');
 
-    const result = await getAuth.execute({
+    const result = await verifyAuth.execute({
       token,
     });
 
@@ -28,13 +28,13 @@ describe('Get Auth', async () => {
 
   test('Invalid token', async () => {
     const cacheManager = new TCacheManager([]);
-    const getAuth = new GetAuth(cacheManager, jwtManager);
+    const verifyAuth = new VerifyAuth(cacheManager, jwtManager);
 
     const token = jwtManager.sign('ID');
 
     cacheManager.set(token, '');
 
-    const result = await getAuth.execute({
+    const result = await verifyAuth.execute({
       token,
     });
 
@@ -47,7 +47,7 @@ describe('Get Auth', async () => {
 
     await sleep(3);
 
-    const result = await getAuth.execute({
+    const result = await verifyAuth.execute({
       token,
     });
 

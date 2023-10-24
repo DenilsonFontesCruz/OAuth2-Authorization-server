@@ -3,9 +3,25 @@ import { Result } from '../../../Domain-Driven-Design-Types/Result';
 import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
 import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
 import { IUserRepository } from '../repositories/IUserRepository';
-import { IHasher } from '../IServices/IHasher';
-import { IJwtManager } from '../IServices/IJwtManager';
+import { IHasher } from '../../Infrastructure/IServices/IHasher';
+import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
+import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
+import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
+import crypto from 'crypto';
+
+export class DataNotProvided extends Result<DomainError> {
+  private constructor(message: string) {
+    super(false, {
+      message,
+      code: ClientErrorCodes.BadRequest,
+    });
+  }
+
+  public static create(message: string): DataNotProvided {
+    return new DataNotProvided(message);
+  }
+}
 
 export class EmailNotFoundError extends Result<DomainError> {
   private constructor(message: string) {
@@ -38,7 +54,12 @@ interface ClientLoginInput {
   password: string;
 }
 
-type ClientLoginOutput = Result<DomainError> | Result<string>;
+export interface ClientLoginOutputBody {
+  acessToken: string;
+  refreshToken: string;
+}
+
+type ClientLoginOutput = Result<DomainError> | Result<ClientLoginOutputBody>;
 
 export class ClientLogin
   implements IUseCase<ClientLoginInput, ClientLoginOutput>
@@ -46,18 +67,29 @@ export class ClientLogin
   private userRepo: IUserRepository;
   private hasher: IHasher;
   private jwtManager: IJwtManager<Identifier>;
+  private cacheManager: ICacheManager;
 
   constructor(
     userRepo: IUserRepository,
     hasher: IHasher,
     jwtManager: IJwtManager<Identifier>,
+    cacheManager: ICacheManager,
   ) {
     this.userRepo = userRepo;
     this.hasher = hasher;
     this.jwtManager = jwtManager;
+    this.cacheManager = cacheManager;
   }
 
   async execute(input: ClientLoginInput): Promise<ClientLoginOutput> {
+    if (Checker.isNullOrUndefined(input.email)) {
+      DataNotProvided.create('Email not provided');
+    }
+
+    if (Checker.isNullOrUndefined(input.password)) {
+      DataNotProvided.create('Password not provided');
+    }
+
     const user = await this.userRepo.findByEmail(input.email);
 
     if (!user) {
@@ -68,8 +100,11 @@ export class ClientLogin
       return PasswordIncorrectError.create('Password incorrect');
     }
 
-    const token = this.jwtManager.sign(user.id);
+    const acessToken = this.jwtManager.sign(user.id);
+    const refreshToken = crypto.randomBytes(16).toString('hex');
 
-    return Result.ok<string>(token);
+    this.cacheManager.set(refreshToken, user.id.toString());
+
+    return Result.ok<ClientLoginOutputBody>({ acessToken, refreshToken });
   }
 }

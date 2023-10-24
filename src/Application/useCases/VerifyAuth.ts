@@ -4,11 +4,10 @@ import { ClientErrorCodes } from '../../../Domain-Driven-Design-Types/ResponseCo
 import { Result } from '../../../Domain-Driven-Design-Types/Result';
 import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
 import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
-import { ICacheManager } from '../IServices/ICacheManager';
-import { IJwtManager } from '../IServices/IJwtManager';
-import { IUserRepository } from '../repositories/IUserRepository';
+import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
+import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
 
-export class TokenNotFound extends Result<DomainError> {
+export class TokenNotProvided extends Result<DomainError> {
   private constructor(message: string) {
     super(false, {
       message,
@@ -16,8 +15,8 @@ export class TokenNotFound extends Result<DomainError> {
     });
   }
 
-  public static create(message: string): TokenNotFound {
-    return new TokenNotFound(message);
+  public static create(message: string): TokenNotProvided {
+    return new TokenNotProvided(message);
   }
 }
 
@@ -47,13 +46,13 @@ export class TokenInvalid extends Result<DomainError> {
   }
 }
 
-interface GetAuthInput {
+interface VerifyAuthInput {
   token: string;
 }
 
-type GetAuthOutput = Result<DomainError> | Result<Identifier>;
+type VerifyAuthOutput = Result<DomainError> | Result<Identifier>;
 
-export class GetAuth implements IUseCase<GetAuthInput, GetAuthOutput> {
+export class VerifyAuth implements IUseCase<VerifyAuthInput, VerifyAuthOutput> {
   private cacheManager: ICacheManager;
   private jwtManager: IJwtManager<Identifier>;
 
@@ -65,9 +64,9 @@ export class GetAuth implements IUseCase<GetAuthInput, GetAuthOutput> {
     this.jwtManager = jwtManager;
   }
 
-  async execute(input: GetAuthInput): Promise<GetAuthOutput> {
+  async execute(input: VerifyAuthInput): Promise<VerifyAuthOutput> {
     if (Checker.isNullOrUndefined(input.token)) {
-      return TokenNotFound.create('Token not found on header');
+      return TokenNotProvided.create('Token not provided');
     }
 
     if (await this.cacheManager.contain(input.token)) {

@@ -4,17 +4,20 @@ import { TUserRepository } from '../Mock/Repositories/TUserRepository';
 import { CreateUser } from '../../Application/useCases/CreateUser';
 import {
   ClientLogin,
+  ClientLoginOutputBody,
   EmailNotFoundError,
   PasswordIncorrectError,
 } from '../../Application/useCases/ClientLogin';
 import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
+import { TCacheManager } from '../Mock/Services/TCacheManager';
 
-describe('Verify User', async () => {
+describe('Client Login', async () => {
   const jwtManager = new JwtManager<Identifier>('secret');
   const userRepo = new TUserRepository([]);
   const hasher = new Hasher(1);
   const createUser = new CreateUser(userRepo, hasher);
+  const cacheManager = new TCacheManager([]);
 
   await createUser.execute({
     email: 'user@mock.test',
@@ -22,7 +25,12 @@ describe('Verify User', async () => {
   });
 
   test('Correct data', async () => {
-    const clientLogin = new ClientLogin(userRepo, hasher, jwtManager);
+    const clientLogin = new ClientLogin(
+      userRepo,
+      hasher,
+      jwtManager,
+      cacheManager,
+    );
 
     const result = await clientLogin.execute({
       email: 'user@mock.test',
@@ -31,10 +39,21 @@ describe('Verify User', async () => {
 
     expect(result.isSuccess).toBeTruthy();
     expect(result.getValue()).not.toBeUndefined();
+
+    const { acessToken, refreshToken } =
+      result.getValue() as ClientLoginOutputBody;
+
+    expect(acessToken).not.toBeUndefined();
+    expect(refreshToken).not.toBeUndefined();
   });
 
   test('Wrong email', async () => {
-    const clientLogin = new ClientLogin(userRepo, hasher, jwtManager);
+    const clientLogin = new ClientLogin(
+      userRepo,
+      hasher,
+      jwtManager,
+      cacheManager,
+    );
 
     const result = await clientLogin.execute({
       email: 'user1@mock.test',
@@ -46,7 +65,12 @@ describe('Verify User', async () => {
   });
 
   test('Wrong password', async () => {
-    const clientLogin = new ClientLogin(userRepo, hasher, jwtManager);
+    const clientLogin = new ClientLogin(
+      userRepo,
+      hasher,
+      jwtManager,
+      cacheManager,
+    );
 
     const result = await clientLogin.execute({
       email: 'user@mock.test',

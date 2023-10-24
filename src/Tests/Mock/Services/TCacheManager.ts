@@ -2,7 +2,7 @@ import { Nothing } from '../../../../Domain-Driven-Design-Types/Generics';
 import {
   ICacheManager,
   KeyValue,
-} from '../../../Application/IServices/ICacheManager';
+} from '../../../Infrastructure/IServices/ICacheManager';
 import { sleep } from '../tools/SleepFunction';
 
 export class TCacheManager implements ICacheManager {
@@ -10,6 +10,14 @@ export class TCacheManager implements ICacheManager {
 
   constructor(cache: KeyValue[]) {
     this.cache = cache;
+  }
+
+  async remove(key: string): Promise<void> {
+    const index = this.cache.findIndex((item) => {
+      return item.key === key;
+    });
+
+    this.cache.splice(index, 1);
   }
 
   async set(key: string, value: string, duration?: number): Promise<void> {

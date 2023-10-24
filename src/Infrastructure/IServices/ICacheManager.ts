@@ -11,4 +11,6 @@ export interface ICacheManager {
   get(key: string): Promise<KeyValue | Nothing>;
 
   contain(key: string): Promise<boolean>;
+
+  remove(key: string): Promise<void>;
 }

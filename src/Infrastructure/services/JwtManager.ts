@@ -1,5 +1,5 @@
 import jwt, { JwtHeader, JwtPayload } from 'jsonwebtoken';
-import { IJwtManager } from '../../Application/IServices/IJwtManager';
+import { IJwtManager } from '../IServices/IJwtManager';
 
 export class JwtManager<payloadT> implements IJwtManager<payloadT> {
   readonly _secret: string;
