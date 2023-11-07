@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { Hasher } from '../../Infrastructure/services/Hasher';
 import {
   Email,
   InvalidEmailFormatError,
@@ -14,21 +13,10 @@ import {
   EmailAlredyRegisteredError,
   IdAlredyRegisteredError,
 } from '../../Application/useCases/CreateUser';
-import { TUserRepository } from '../Mock/Repositories/TUserRepository';
 import { createMockUser } from '../Mock/tools/CreateMockUser';
+import { TestDependencies } from '../TestDependencies';
 
-describe('Services tests', () => {
-  test('Hash', async () => {
-    const plaintext = 'hello';
-    const saltRounds = 1;
-    const hasher = new Hasher(saltRounds);
-
-    const hashPlaintext = await hasher.encrypt(plaintext);
-
-    expect(hashPlaintext).not.instanceOf(Error);
-    expect(hashPlaintext).not.equal(plaintext);
-  });
-});
+const { SERVICES, REPOSITORIES } = TestDependencies;
 
 describe('Email validation tests', () => {
   test('Correct Email', () => {
@@ -109,10 +97,10 @@ describe('Password validation tests', () => {
 });
 
 describe('UseCase test', () => {
-  const hasher = new Hasher(1);
-
+  const hasher = SERVICES['Hasher'](1);
   test('Correct scenario', async () => {
-    const userRepo = new TUserRepository([]);
+    const hasher = SERVICES['Hasher'](1);
+    const userRepo = REPOSITORIES['UserRepository']();
     const createUser = new CreateUser(userRepo, hasher);
 
     const result = await createUser.execute({
@@ -121,12 +109,15 @@ describe('UseCase test', () => {
     });
 
     expect(result.isSuccess).toBeTruthy();
-    expect(await userRepo.getSaveCount()).equal(1);
+    expect((await userRepo.findAll()).length).toBe(1);
   });
 
   test('Email Already in use', async () => {
     const userList = await createMockUser(1);
-    const userRepo = new TUserRepository(userList);
+    const userRepo = REPOSITORIES['UserRepository']();
+
+    await userRepo.saveMany(userList);
+
     const createUser = new CreateUser(userRepo, hasher);
 
     const result = await createUser.execute({
@@ -136,12 +127,14 @@ describe('UseCase test', () => {
 
     expect(result.isFailure).toBeTruthy();
     expect(result).instanceOf(EmailAlredyRegisteredError);
-    expect(await userRepo.getSaveCount()).equal(0);
+    expect((await userRepo.findAll()).length).toBe(1);
   });
 
   test('Id Already in use', async () => {
     const userList = await createMockUser(1);
-    const userRepo = new TUserRepository(userList);
+    const userRepo = REPOSITORIES['UserRepository']();
+    await userRepo.saveMany(userList);
+
     const createUser = new CreateUser(userRepo, hasher);
 
     const result = await createUser.execute({
@@ -152,6 +145,6 @@ describe('UseCase test', () => {
 
     expect(result.isFailure).toBeTruthy();
     expect(result).instanceOf(IdAlredyRegisteredError);
-    expect(await userRepo.getSaveCount()).equal(0);
+    expect((await userRepo.findAll()).length).toBe(1);
   });
 });

@@ -1,6 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { Hasher } from '../../Infrastructure/services/Hasher';
-import { TUserRepository } from '../Mock/Repositories/TUserRepository';
 import { CreateUser } from '../../Application/useCases/CreateUser';
 import {
   ClientLogin,
@@ -8,21 +6,22 @@ import {
   EmailNotFoundError,
   PasswordIncorrectError,
 } from '../../Application/useCases/ClientLogin';
-import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
-import { TCacheManager } from '../Mock/Services/TCacheManager';
+import {
+  createMockUser,
+  getMockUserRawPassword,
+} from '../Mock/tools/CreateMockUser';
+import { TestDependencies } from '../TestDependencies';
+
+const { SERVICES, REPOSITORIES } = TestDependencies;
 
 describe('Client Login', async () => {
-  const jwtManager = new JwtManager<Identifier>('secret');
-  const userRepo = new TUserRepository([]);
-  const hasher = new Hasher(1);
-  const createUser = new CreateUser(userRepo, hasher);
-  const cacheManager = new TCacheManager([]);
-
-  await createUser.execute({
-    email: 'user@mock.test',
-    password: 'User1234',
-  });
+  const jwtManager = SERVICES['JwtManager']<Identifier>('secret');
+  const userRepo = REPOSITORIES['UserRepository']();
+  const hasher = SERVICES['Hasher'](1);
+  const userList = await createMockUser(1, hasher);
+  await userRepo.saveMany(userList);
+  const cacheManager = SERVICES['CacheManager']();
 
   test('Correct data', async () => {
     const clientLogin = new ClientLogin(
@@ -33,8 +32,8 @@ describe('Client Login', async () => {
     );
 
     const result = await clientLogin.execute({
-      email: 'user@mock.test',
-      password: 'User1234',
+      email: userList[0].getEmail().getValue(),
+      password: getMockUserRawPassword(0),
     });
 
     expect(result.isSuccess).toBeTruthy();
@@ -56,8 +55,8 @@ describe('Client Login', async () => {
     );
 
     const result = await clientLogin.execute({
-      email: 'user1@mock.test',
-      password: 'User1234',
+      email: 'wrong@email.test',
+      password: getMockUserRawPassword(0),
     });
 
     expect(result.isFailure).toBeTruthy();
@@ -73,8 +72,8 @@ describe('Client Login', async () => {
     );
 
     const result = await clientLogin.execute({
-      email: 'user@mock.test',
-      password: 'User12345',
+      email: userList[0].getEmail().getValue(),
+      password: 'WrongPassword',
     });
 
     expect(result.isFailure).toBeTruthy();

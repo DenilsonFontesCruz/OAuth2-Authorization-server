@@ -90,7 +90,7 @@ export class ClientLogin
       DataNotProvided.create('Password not provided');
     }
 
-    const user = await this.userRepo.findByEmail(input.email);
+    const user = (await this.userRepo.findByEmail(input.email))[0];
 
     if (!user) {
       return EmailNotFoundError.create('Email unregistered');

@@ -1,13 +1,16 @@
-import {
-  Identifier,
-  Nothing,
-} from '../../../Domain-Driven-Design-Types/Generics';
+import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { User } from '../../Domain/aggregates/userAggregate/User';
 
 export interface IUserRepository {
-  findByEmail(email: string): Promise<User | Nothing>;
+  findAll(): Promise<User[]>;
 
-  findById(id: Identifier): Promise<User | Nothing>;
+  findByEmail(email: string): Promise<User[]>;
+
+  findById(id: Identifier): Promise<User | null>;
 
   save(user: User): Promise<void>;
+
+  deleteAll(): Promise<void>;
+
+  saveMany(userList: User[]): Promise<void>;
 }

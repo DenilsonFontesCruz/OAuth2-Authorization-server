@@ -1,13 +1,14 @@
 import { describe, expect, test } from 'vitest';
-import { JwtManager } from '../../Infrastructure/services/JwtManager';
-import { TCacheManager } from '../Mock/Services/TCacheManager';
 import { VerifyAuth } from '../../Application/useCases/VerifyAuth';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Logout } from '../../Application/useCases/Logout';
+import { TestDependencies } from '../TestDependencies';
+
+const { SERVICES } = TestDependencies;
 
 describe('Logout', async () => {
-  const jwtManager = new JwtManager<Identifier>('secret');
-  const cacheManager = new TCacheManager([]);
+  const jwtManager = SERVICES['JwtManager']<Identifier>('secret');
+  const cacheManager = SERVICES['CacheManager']();
   const verifyAuth = new VerifyAuth(cacheManager, jwtManager);
   const logout = new Logout(verifyAuth, cacheManager);
 

@@ -22,7 +22,7 @@ export async function createMockUser(
     }
 
     const user = User.create({
-      id: index,
+      id: index.toString(),
       email: email.getValue() as Email,
       password: password,
     });
@@ -36,4 +36,8 @@ export async function createMockUser(
   }
 
   return userList as User[];
+}
+
+export function getMockUserRawPassword(index: number): string {
+  return `User${++index}test`;
 }

@@ -3,6 +3,9 @@ export interface IJwtManager<payloadT> {
 
   sign(payload: payloadT, duration?: number): string;
 
-  
-  verify(token: string): {payload: payloadT, issuedAt: number, expiresAt?: number};
+  verify(token: string): {
+    payload: payloadT;
+    issuedAt: number;
+    expiresAt?: number;
+  };
 }

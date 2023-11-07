@@ -63,13 +63,13 @@ export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
     }
 
     if (!(await this.cacheManager.contain(input.refreshToken))) {
-      return TokenInvalid.create('Token invalid');
+      return TokenInvalid.create('Token invalid A');
     }
 
     const item = await this.cacheManager.get(input.refreshToken);
 
     if (item == '' || item.value == '') {
-      return TokenInvalid.create('Token invalid');
+      return TokenInvalid.create('Token invalid B');
     }
 
     const acessToken = this.jwtManager.sign(item.value);

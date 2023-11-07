@@ -40,6 +40,12 @@ export class Email extends ValueObject<EmailProps> {
     return emailRegex.test(email);
   }
 
+  public static recovery(email: string): Email {
+    return new Email({
+      email,
+    });
+  }
+
   public static create(email: string): EmailResponse {
     if (Checker.isNullOrUndefined(email)) {
       return Result.fail(

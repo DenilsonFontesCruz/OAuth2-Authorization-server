@@ -1,4 +1,4 @@
-import jwt, { JwtHeader, JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { IJwtManager } from '../IServices/IJwtManager';
 
 export class JwtManager<payloadT> implements IJwtManager<payloadT> {

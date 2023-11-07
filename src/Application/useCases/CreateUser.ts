@@ -63,7 +63,7 @@ export class CreateUser implements IUseCase<CreateUserInput, CreateUserOutput> {
     ]);
 
     if (result.isFailure) {
-      result.errorValue() as Result<DomainError>;
+      return result.errorValue() as Result<DomainError>;
     }
 
     if (input.id && (await this.userRepo.findById(input.id))) {
@@ -72,7 +72,7 @@ export class CreateUser implements IUseCase<CreateUserInput, CreateUserOutput> {
       );
     }
 
-    if (await this.userRepo.findByEmail(input.email)) {
+    if ((await this.userRepo.findByEmail(input.email)).length > 0) {
       return EmailAlredyRegisteredError.create(
         `Email: ${input.email} Already in use, please try another`,
       );

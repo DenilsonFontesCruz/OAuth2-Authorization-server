@@ -8,8 +8,12 @@ import { sleep } from '../tools/SleepFunction';
 export class TCacheManager implements ICacheManager {
   private cache: KeyValue[];
 
-  constructor(cache: KeyValue[]) {
-    this.cache = cache;
+  constructor(cache?: KeyValue[]) {
+    if (cache == undefined) {
+      this.cache = [];
+    } else {
+      this.cache = cache;
+    }
   }
 
   async remove(key: string): Promise<void> {
@@ -25,7 +29,7 @@ export class TCacheManager implements ICacheManager {
       key,
       value,
     });
-    if(duration) {
+    if (duration) {
       await sleep(duration);
 
       const index = this.cache.findIndex((item) => {
@@ -35,13 +39,13 @@ export class TCacheManager implements ICacheManager {
       this.cache.splice(index, 1);
     }
   }
-  async get(key: string): Promise<KeyValue | Nothing> {
+  async get(key: string): Promise<KeyValue | null> {
     const item = this.cache.find((item) => {
       return item.key === key;
     });
 
     if (!item) {
-      return '';
+      return null;
     }
 
     return item;

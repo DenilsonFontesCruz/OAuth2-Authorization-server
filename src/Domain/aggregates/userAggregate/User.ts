@@ -43,6 +43,10 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.password;
   }
 
+  public static recovery(userProps: UserProps): User {
+    return new User(userProps);
+  }
+
   public static create(userProps: UserProps): UserResponse {
     const user = new User(userProps);
 

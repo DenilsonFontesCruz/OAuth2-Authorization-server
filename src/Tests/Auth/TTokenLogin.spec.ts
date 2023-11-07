@@ -1,24 +1,26 @@
 import { describe, expect, test } from 'vitest';
 import { TokenLoginOutputBody } from '../../Application/useCases/TokenLogin';
-import { JwtManager } from '../../Infrastructure/services/JwtManager';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
-import { TCacheManager } from '../Mock/Services/TCacheManager';
 import {
   TokenInvalid,
   TokenLogin,
 } from '../../Application/useCases/TokenLogin';
+import { TestDependencies } from '../TestDependencies';
+
+const { SERVICES } = TestDependencies;
 
 describe('Token Login', async () => {
-  const jwtManager = new JwtManager<Identifier>('secret');
-  const cacheManager = new TCacheManager([]);
+  const jwtManager = SERVICES['JwtManager']<Identifier>('secret');
+  const cacheManager = SERVICES['CacheManager']();
 
   test('Correct data', async () => {
-    const cacheManager = new TCacheManager([
+    const cacheManager = SERVICES['CacheManager']([
       {
         key: 'RefreshToken',
         value: 'ID',
       },
     ]);
+
     const tokenLogin = new TokenLogin(jwtManager, cacheManager);
 
     const result = await tokenLogin.execute({
@@ -51,7 +53,7 @@ describe('Token Login', async () => {
   });
 
   test('Empty Value on Cache', async () => {
-    const cacheManager = new TCacheManager([
+    const cacheManager = SERVICES['CacheManager']([
       {
         key: 'RefreshToken',
         value: '',
