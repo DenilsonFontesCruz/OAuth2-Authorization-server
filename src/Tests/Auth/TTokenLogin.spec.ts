@@ -5,7 +5,7 @@ import {
   TokenInvalid,
   TokenLogin,
 } from '../../Application/useCases/TokenLogin';
-import { TestDependencies } from '../TestDependencies';
+import { TestDependencies } from '../../config/Dependencies/TestDependencies';
 
 const { SERVICES } = TestDependencies;
 

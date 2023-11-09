@@ -11,7 +11,7 @@ import {
   createMockUser,
   getMockUserRawPassword,
 } from '../Mock/tools/CreateMockUser';
-import { TestDependencies } from '../TestDependencies';
+import { TestDependencies } from '../../config/Dependencies/TestDependencies';
 
 const { SERVICES, REPOSITORIES } = TestDependencies;
 
