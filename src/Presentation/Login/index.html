@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <script src="../lib/jquery-3.7.1.min.js"></script>
+    <script src="./script.js"></script>
+
+    <label for="email">E-mail</label>
+    <input type="text" id="email" />
+    <label for="password">Senha</label>
+    <input type="text" id="password" />
+    <button id="login">Logar</button>
+
+    <script>
+      const loginButton = document.getElementById('login');
+
+      loginButton.addEventListener('click', () => {
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+
+        sendData(email.value, password.value);
+      });
+    </script>
+  </body>
+</html>

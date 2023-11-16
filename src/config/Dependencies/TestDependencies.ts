@@ -5,8 +5,8 @@ import {
 } from '../../Infrastructure/IServices/ICacheManager';
 import { IHasher } from '../../Infrastructure/IServices/IHasher';
 import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
-import { Hasher } from '../../Infrastructure/services/Hasher';
-import { JwtManager } from '../../Infrastructure/services/JwtManager';
+import { Hasher } from '../../Infrastructure/Services/Hasher';
+import { JwtManager } from '../../Infrastructure/Services/JwtManager';
 import { TUserRepository } from '../../Tests/Mock/Repositories/TUserRepository';
 import { TCacheManager } from '../../Tests/Mock/Services/TCacheManager';
 

@@ -7,6 +7,7 @@ import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
 import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
 import crypto from 'crypto';
+import { ITokensDuration } from '../../config/UseCasesManager';
 
 export class TokenNotProvided extends Result<DomainError> {
   private constructor(message: string) {
@@ -48,13 +49,16 @@ type TokenLoginOutput = Result<DomainError> | Result<TokenLoginOutputBody>;
 export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
   private jwtManager: IJwtManager<Identifier>;
   private cacheManager: ICacheManager;
+  private tokensDuration: ITokensDuration;
 
   constructor(
     jwtManager: IJwtManager<Identifier>,
     cacheManager: ICacheManager,
+    tokensDuration: ITokensDuration,
   ) {
     this.jwtManager = jwtManager;
     this.cacheManager = cacheManager;
+    this.tokensDuration = tokensDuration;
   }
 
   async execute(input: TokenLoginInput): Promise<TokenLoginOutput> {
@@ -68,13 +72,24 @@ export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
 
     const item = await this.cacheManager.get(input.refreshToken);
 
-    if (item == '' || item.value == '') {
+    if (!item || item.value == '') {
       return TokenInvalid.create('Token invalid B');
     }
 
-    const acessToken = this.jwtManager.sign(item.value);
+    await this.cacheManager.remove(input.refreshToken);
+
+    const acessToken = this.jwtManager.sign(
+      item.value,
+      this.tokensDuration.acessTokenDuration,
+    );
 
     const refreshToken = crypto.randomBytes(16).toString('hex');
+
+    this.cacheManager.set(
+      refreshToken,
+      item.value.toString(),
+      this.tokensDuration.refreshTokenDuration,
+    );
 
     return Result.ok<TokenLoginOutputBody>({ acessToken, refreshToken });
   }

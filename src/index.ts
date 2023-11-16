@@ -1,10 +1,16 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { DevDependencies } from './config/Dependencies/DevDependencies';
-import { Application } from './Application';
+import { Server } from './Server';
 import { ProdDependencies } from './config/Dependencies/ProdDependencies';
 import { configDotenv } from 'dotenv';
 import path from 'path';
+import { ClientLogin } from './Application/useCases/ClientLogin';
+import { CreateUser } from './Application/useCases/CreateUser';
+import { Logout } from './Application/useCases/Logout';
+import { TokenLogin } from './Application/useCases/TokenLogin';
+import { VerifyAuth } from './Application/useCases/VerifyAuth';
+import { UseCasesManager } from './config/UseCasesManager';
 
 const argv = yargs(hideBin(process.argv)).parseSync();
 
@@ -46,6 +52,9 @@ async function start(env: string): Promise<void> {
       REDIS_PORT,
       HASHER_SALT,
       JWT_MANAGER_SECRET,
+      SERVER_PORT,
+      ACESS_TOKEN_DURATION,
+      REFRESH_TOKEN_DURATION,
     } = process.env;
 
     const dependenciesManager = new manager[1]({
@@ -70,9 +79,16 @@ async function start(env: string): Promise<void> {
 
     const dependencies = await dependenciesManager.start();
 
-    const app = new Application(dependencies);
+    const useCasesManager = new UseCasesManager(dependencies);
 
-    await app.start();
+    const useCasesInstances = useCasesManager.start({
+      acessTokenDuration: Number(ACESS_TOKEN_DURATION),
+      refreshTokenDuration: Number(REFRESH_TOKEN_DURATION),
+    });
+
+    const server = new Server(useCasesInstances, Number(SERVER_PORT));
+
+    await server.start();
   } catch (err) {
     console.error(err);
     process.exit();

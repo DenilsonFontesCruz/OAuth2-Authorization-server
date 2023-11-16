@@ -9,6 +9,7 @@ import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
 import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
 import crypto from 'crypto';
+import { ITokensDuration } from '../../config/UseCasesManager';
 
 export class DataNotProvided extends Result<DomainError> {
   private constructor(message: string) {
@@ -68,17 +69,20 @@ export class ClientLogin
   private hasher: IHasher;
   private jwtManager: IJwtManager<Identifier>;
   private cacheManager: ICacheManager;
+  private tokensDuration: ITokensDuration;
 
   constructor(
     userRepo: IUserRepository,
     hasher: IHasher,
     jwtManager: IJwtManager<Identifier>,
     cacheManager: ICacheManager,
+    tokensDuration: ITokensDuration,
   ) {
     this.userRepo = userRepo;
     this.hasher = hasher;
     this.jwtManager = jwtManager;
     this.cacheManager = cacheManager;
+    this.tokensDuration = tokensDuration;
   }
 
   async execute(input: ClientLoginInput): Promise<ClientLoginOutput> {
@@ -100,10 +104,17 @@ export class ClientLogin
       return PasswordIncorrectError.create('Password incorrect');
     }
 
-    const acessToken = this.jwtManager.sign(user.id);
+    const acessToken = this.jwtManager.sign(
+      user.id,
+      this.tokensDuration.acessTokenDuration,
+    );
     const refreshToken = crypto.randomBytes(16).toString('hex');
 
-    this.cacheManager.set(refreshToken, user.id.toString());
+    this.cacheManager.set(
+      refreshToken,
+      user.id.toString(),
+      this.tokensDuration.refreshTokenDuration,
+    );
 
     return Result.ok<ClientLoginOutputBody>({ acessToken, refreshToken });
   }

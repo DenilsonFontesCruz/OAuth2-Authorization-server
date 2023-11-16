@@ -27,4 +27,8 @@ export class Checker {
   ): boolean {
     return string.length >= min && string.length <= max;
   }
+
+  public static verifyData<DTO extends object>(data: DTO): boolean {
+    return this.isNullOrUndefinedList(Object.values(data));
+  }
 }

@@ -5,7 +5,8 @@ import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
 import { VerifyAuth } from './VerifyAuth';
 
 interface LogoutInput {
-  token: string;
+  acessToken: string;
+  refreshToken: string;
 }
 
 type LogoutOutput = Result<DomainError> | Result<string>;
@@ -21,14 +22,15 @@ export class Logout implements IUseCase<LogoutInput, LogoutOutput> {
 
   async execute(input: LogoutInput): Promise<LogoutOutput> {
     const result = await this.verifyAuth.execute({
-      token: input.token,
+      acessToken: input.acessToken,
     });
 
     if (result.isFailure) {
       return result as Result<DomainError>;
     }
 
-    await this.cacheManager.set(input.token, '');
+    await this.cacheManager.set(input.acessToken, '');
+    await this.cacheManager.remove(input.refreshToken);
 
     return Result.ok('Logout completed');
   }

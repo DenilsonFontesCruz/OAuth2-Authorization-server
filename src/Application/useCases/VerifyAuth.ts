@@ -47,7 +47,7 @@ export class TokenInvalid extends Result<DomainError> {
 }
 
 interface VerifyAuthInput {
-  token: string;
+  acessToken: string;
 }
 
 type VerifyAuthOutput = Result<DomainError> | Result<Identifier>;
@@ -65,17 +65,17 @@ export class VerifyAuth implements IUseCase<VerifyAuthInput, VerifyAuthOutput> {
   }
 
   async execute(input: VerifyAuthInput): Promise<VerifyAuthOutput> {
-    if (Checker.isNullOrUndefined(input.token)) {
+    if (Checker.isNullOrUndefined(input.acessToken)) {
       return TokenNotProvided.create('Token not provided');
     }
 
-    if (await this.cacheManager.contain(input.token)) {
+    if (await this.cacheManager.contain(input.acessToken)) {
       return TokenInvalid.create('Token not valid');
     }
 
-    const tokenBody = this.jwtManager.verify(input.token);
+    const tokenBody = this.jwtManager.verify(input.acessToken);
 
-    if ((tokenBody.expiresAt as number) < Date.now()) {
+    if ((tokenBody.expiresAt as number) * 1000 < Date.now()) {
       return TokenExpired.create('Token expired');
     }
 

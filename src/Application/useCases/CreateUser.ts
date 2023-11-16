@@ -42,7 +42,7 @@ interface CreateUserInput {
   password: string;
 }
 
-type CreateUserOutput = Result<DomainError> | Result<void>;
+type CreateUserOutput = Result<DomainError> | Result<string>;
 
 export class CreateUser implements IUseCase<CreateUserInput, CreateUserOutput> {
   private userRepo: IUserRepository;
@@ -94,7 +94,7 @@ export class CreateUser implements IUseCase<CreateUserInput, CreateUserOutput> {
       }
       await this.userRepo.save(userOrError.getValue() as User);
 
-      return Result.ok<void>();
+      return Result.ok<string>('User created');
     } catch (error) {
       console.log('Create User catch:', error);
       throw error;

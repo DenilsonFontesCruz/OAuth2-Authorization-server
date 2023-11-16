@@ -7,9 +7,9 @@ import {
   RedisManager,
 } from '../../Infrastructure/Database/Redis';
 import { UserRepositoryMongo } from '../../Infrastructure/Repository/UserRepositoryMongo';
-import { CacheManagerRedis } from '../../Infrastructure/services/CacheManagerRedis';
-import { Hasher } from '../../Infrastructure/services/Hasher';
-import { JwtManager } from '../../Infrastructure/services/JwtManager';
+import { CacheManagerRedis } from '../../Infrastructure/Services/CacheManagerRedis';
+import { Hasher } from '../../Infrastructure/Services/Hasher';
+import { JwtManager } from '../../Infrastructure/Services/JwtManager';
 import { IDependencies, IDependenciesManager } from './IDependencies';
 
 interface DependenciesConfig {

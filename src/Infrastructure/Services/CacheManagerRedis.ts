@@ -29,10 +29,13 @@ export class CacheManagerRedis implements ICacheManager {
       value,
     };
   }
-  contain(key: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async contain(key: string): Promise<boolean> {
+    if (!(await this.redis.get(key))) {
+      return false;
+    }
+    return true;
   }
-  remove(key: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async remove(key: string): Promise<void> {
+    await this.redis.del(key);
   }
 }
