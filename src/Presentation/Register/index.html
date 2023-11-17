@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../lib/reset.css" />
     <link rel="stylesheet" href="./style.css" />
-    <title>Login</title>
+    <title>Registro</title>
   </head>
   <body>
     <script src="../lib/jquery-3.7.1.min.js"></script>
@@ -36,17 +36,15 @@
       </div>
 
       <div class="buttons">
-        <a class="button-register" id="register" href="/web/register"
-          >Criar uma conta</a
-        >
-        <button class="button-login" id="login">Logar</button>
+        <a class="button-login" id="login" href="/web/login">Logar</a>
+        <button class="button-register" id="register">Cadastrar</button>
       </div>
     </div>
 
     <script>
-      const loginButton = document.getElementById('login');
+      const registerButton = document.getElementById('register');
 
-      loginButton.addEventListener('click', () => {
+      registerButton.addEventListener('click', () => {
         const email = document.getElementById('email');
         const password = document.getElementById('password');
 

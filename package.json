@@ -39,6 +39,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^18.11.19",
     "@types/nodemailer": "^6.4.7",
+    "@types/pug": "^2.0.9",
     "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^9.0.3",
     "@types/yargs": "^17.0.29",
@@ -50,6 +51,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.33.2",
     "nodemon": "^2.0.20",
+    "pug": "^3.0.2",
     "swagger-ui-express": "^5.0.0",
     "tslib": "^2.5.0"
   }

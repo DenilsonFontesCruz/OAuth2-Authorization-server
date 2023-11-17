@@ -13,6 +13,10 @@ export class UserOpenRoutes implements IRoutes {
   create(): Router {
     const route = Router();
 
+    route.get('/register', async (req, res) => {
+      return res.sendFile(path.join(__dirname, '../../Presentation/Register'));
+    });
+
     route.post('/register', async (req, res) => {
       /*  #swagger.parameters['body'] = {
                 in: 'body',
@@ -26,6 +30,8 @@ export class UserOpenRoutes implements IRoutes {
 
       try {
         const { email, password } = req.body;
+
+        console.log(req);
 
         const result = await this.useCasesInstances.createUser.execute({
           email,
@@ -63,6 +69,33 @@ export class UserOpenRoutes implements IRoutes {
         const result = await this.useCasesInstances.clientLogin.execute({
           email,
           password,
+        });
+
+        if (result.isFailure) {
+          return res.json(result.errorValue());
+        }
+
+        return res.json(result.getValue());
+      } catch (err) {
+        return res.json(err);
+      }
+    });
+
+    route.post('/token-login', async (req, res) => {
+      /*  #swagger.parameters['body'] = {
+                in: 'body',
+                description: 'Token login.',
+                required: 'true',
+                schema: {
+                    $refreshToken: 'token',
+                }
+        } */
+
+      try {
+        const { refreshToken } = req.body;
+
+        const result = await this.useCasesInstances.tokenLogin.execute({
+          refreshToken,
         });
 
         if (result.isFailure) {

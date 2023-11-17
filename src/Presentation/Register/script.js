@@ -1,6 +1,6 @@
 function sendData(email, password) {
   $.ajax({
-    url: `${window.location.origin}/client-login`,
+    url: `${window.location.origin}/register`,
     contentType: 'application/json',
     dataType: 'json',
     method: 'POST',
@@ -10,8 +10,7 @@ function sendData(email, password) {
     }),
   }).done((res) => {
     if (!res.code) {
-      window.localStorage.setItem('acessToken', res.acessToken);
-      window.localStorage.setItem('refreshToken', res.refreshToken);
+      window.location = '/web/login';
     }
     console.log(res);
   });
