@@ -14,9 +14,6 @@ declare global {
       //JwtManager
       JWT_MANAGER_SECRET: string;
 
-      //Server
-      SERVER_PORT: number;
-
       //UseCases
       //ClientLogin & TokenLogin
       ACESS_TOKEN_DURATION: number;

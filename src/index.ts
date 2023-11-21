@@ -5,16 +5,15 @@ import { Server } from './Server';
 import { ProdDependencies } from './config/Dependencies/ProdDependencies';
 import { configDotenv } from 'dotenv';
 import path from 'path';
-import { ClientLogin } from './Application/useCases/ClientLogin';
-import { CreateUser } from './Application/useCases/CreateUser';
-import { Logout } from './Application/useCases/Logout';
-import { TokenLogin } from './Application/useCases/TokenLogin';
-import { VerifyAuth } from './Application/useCases/VerifyAuth';
 import { UseCasesManager } from './config/UseCasesManager';
 
 const argv = yargs(hideBin(process.argv)).parseSync();
 
 if (!argv['env']) {
+  process.exit();
+}
+
+if (!argv['port']) {
   process.exit();
 }
 
@@ -26,9 +25,9 @@ const DependenciesManager: {
   production: ProdDependencies,
 };
 
-start(argv['env'] as string);
+start(argv['env'] as string, Number(argv['port']));
 
-async function start(env: string): Promise<void> {
+async function start(env: string, port: number): Promise<void> {
   try {
     const manager = Object.entries(DependenciesManager).find((entry) => {
       if (env == entry[0]) {
@@ -52,7 +51,6 @@ async function start(env: string): Promise<void> {
       REDIS_PORT,
       HASHER_SALT,
       JWT_MANAGER_SECRET,
-      SERVER_PORT,
       ACESS_TOKEN_DURATION,
       REFRESH_TOKEN_DURATION,
     } = process.env;
@@ -86,7 +84,7 @@ async function start(env: string): Promise<void> {
       refreshTokenDuration: Number(REFRESH_TOKEN_DURATION),
     });
 
-    const server = new Server(useCasesInstances, Number(SERVER_PORT));
+    const server = new Server(useCasesInstances, port);
 
     await server.start();
   } catch (err) {

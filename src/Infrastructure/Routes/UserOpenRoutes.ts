@@ -14,20 +14,10 @@ export class UserOpenRoutes implements IRoutes {
     const route = Router();
 
     route.get('/register', async (req, res) => {
-      return res.sendFile(path.join(__dirname, '../../Presentation/Register'));
+      return res.redirect('/web/register');
     });
 
     route.post('/register', async (req, res) => {
-      /*  #swagger.parameters['body'] = {
-                in: 'body',
-                description: 'Create a new user.',
-                required: 'true',
-                schema: {
-                    $email: 'John@gmail.com',
-                    $password: 'John1234'
-                }
-        } */
-
       try {
         const { email, password } = req.body;
 
@@ -49,20 +39,10 @@ export class UserOpenRoutes implements IRoutes {
     });
 
     route.get('/client-login', async (req, res) => {
-      return res.sendFile(path.join(__dirname, '../../Presentation/Login'));
+      return res.redirect('/web/login');
     });
 
     route.post('/client-login', async (req, res) => {
-      /*  #swagger.parameters['body'] = {
-                in: 'body',
-                description: 'Client login.',
-                required: 'true',
-                schema: {
-                    $email: 'John@gmail.com',
-                    $password: 'John1234'
-                }
-        } */
-
       try {
         const { email, password } = req.body;
 
@@ -82,15 +62,6 @@ export class UserOpenRoutes implements IRoutes {
     });
 
     route.post('/token-login', async (req, res) => {
-      /*  #swagger.parameters['body'] = {
-                in: 'body',
-                description: 'Token login.',
-                required: 'true',
-                schema: {
-                    $refreshToken: 'token',
-                }
-        } */
-
       try {
         const { refreshToken } = req.body;
 
