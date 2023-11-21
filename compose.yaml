@@ -1,0 +1,40 @@
+services:
+  api:
+    build: .
+    ports:
+      - 9102:9102
+    environment:
+      - script=dev
+      - port=9102
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - auth-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    logging:
+      driver: none
+    networks:
+      - auth-network
+
+  mongo:
+    command: mongod --quiet --logpath /dev/null 
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: "exit 0"
+    logging:
+      driver: none
+    networks:
+      - auth-network
+
+networks:
+  auth-network:
+    driver: bridge

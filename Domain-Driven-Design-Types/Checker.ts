@@ -1,10 +1,10 @@
 export class Checker {
-  public static isNullOrUndefined(value: any): boolean {
+  public static isNullOrUndefined(value: unknown): boolean {
     return value === null || value === undefined || value === '';
   }
 
-  public static isNullOrUndefinedList(array: Array<any>): boolean {
-    for (let value in array) {
+  public static isNullOrUndefinedList(array: Array<unknown>): boolean {
+    for (const value in array) {
       if (this.isNullOrUndefined(value)) {
         return true;
       }
@@ -12,7 +12,7 @@ export class Checker {
     return false;
   }
 
-  public static isEmpty(array: Array<any>): boolean {
+  public static isEmpty(array: Array<unknown>): boolean {
     return array.length <= 0;
   }
 
@@ -26,5 +26,9 @@ export class Checker {
     max: number,
   ): boolean {
     return string.length >= min && string.length <= max;
+  }
+
+  public static verifyData<DTO extends object>(data: DTO): boolean {
+    return this.isNullOrUndefinedList(Object.values(data));
   }
 }

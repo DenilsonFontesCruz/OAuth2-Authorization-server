@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../lib/reset.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Registro</title>
+  </head>
+  <body>
+    <script src="../lib/jquery-3.7.1.min.js"></script>
+    <script src="./script.js"></script>
+
+    <div class="container">
+      <h1 class="system_name">system name</h1>
+      <div class="email">
+        <label class="email-label" for="email">E-mail</label>
+        <input
+          class="email-input"
+          type="email"
+          name="email"
+          id="email"
+          placeholder="John@gmail.com"
+        />
+      </div>
+
+      <div class="password">
+        <label class="password-label" for="password">Senha</label>
+        <input
+          class="password-input"
+          type="password"
+          name="password"
+          id="password"
+          placeholder="John1234"
+        />
+      </div>
+
+      <div class="buttons">
+        <a class="button-login" id="login" href="/web/login">Logar</a>
+        <button class="button-register" id="register">Cadastrar</button>
+      </div>
+    </div>
+
+    <script>
+      const registerButton = document.getElementById('register');
+
+      registerButton.addEventListener('click', () => {
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+
+        sendData(email.value, password.value);
+      });
+    </script>
+  </body>
+</html>

@@ -1,9 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { Hasher } from '../../Application/services/Hasher';
-import {
-  InvalidNicknameFormatError,
-  Nickname,
-} from '../../Domain/aggregates/userAggregate/valueObjects/Nickname';
 import {
   Email,
   InvalidEmailFormatError,
@@ -12,65 +7,16 @@ import {
   InvalidPasswordFormatError,
   Password,
 } from '../../Domain/aggregates/userAggregate/valueObjects/Password';
-import { stringGeneratorBySize } from '../tools/stringGeneratorBySize';
-import { CreateUser } from '../../Application/useCases/CreateUser';
-import { TUserRepository } from '../Mock/Repositories/TUserRepository';
+import { stringGeneratorBySize } from '../Mock/tools/stringGeneratorBySize';
+import {
+  CreateUser,
+  EmailAlredyRegisteredError,
+  IdAlredyRegisteredError,
+} from '../../Application/useCases/CreateUser';
+import { createMockUser } from '../Mock/tools/CreateMockUser';
+import { TestDependencies } from '../../config/Dependencies/TestDependencies';
 
-describe('Services tests', () => {
-  test('Hash', async () => {
-    const plaintext = 'hello';
-    const saltRounds = 1;
-    const hasher = new Hasher(saltRounds);
-
-    const hashPlaintext = await hasher.encrypt(plaintext);
-
-    expect(hashPlaintext).not.instanceOf(Error);
-    expect(hashPlaintext).not.equal(plaintext);
-  });
-});
-
-describe('Nickname validation tests', () => {
-  test('Correct Nickname', () => {
-    const text = 'John';
-    const result = Nickname.create(text);
-    const nickname = result.getValue();
-
-    expect(result.isSuccess).toBeTruthy();
-    expect(nickname?.getValue()).equal(text);
-  });
-  test('Small Nickname', () => {
-    const text = stringGeneratorBySize(2);
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Big Nickname', () => {
-    const text = stringGeneratorBySize(61);
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Null Nickname', () => {
-    const text = '';
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-  test('Special characters in Nickname', () => {
-    const text = 'J@hn';
-    const result = Nickname.create(text);
-    const error = result.errorValue();
-
-    expect(result.isFailure).toBeTruthy();
-    expect(error).instanceOf(InvalidNicknameFormatError);
-  });
-});
+const { SERVICES, REPOSITORIES } = TestDependencies;
 
 describe('Email validation tests', () => {
   test('Correct Email', () => {
@@ -151,18 +97,54 @@ describe('Password validation tests', () => {
 });
 
 describe('UseCase test', () => {
+  const hasher = SERVICES['Hasher'](1);
   test('Correct scenario', async () => {
-    const hasher = new Hasher(1);
-    const userRepo = new TUserRepository([]);
+    const hasher = SERVICES['Hasher'](1);
+    const userRepo = REPOSITORIES['UserRepository']();
     const createUser = new CreateUser(userRepo, hasher);
 
     const result = await createUser.execute({
-      nickname: 'john',
       email: 'john@gmail.com',
       password: 'John1234',
     });
 
-    expect(result).toBeUndefined();
-    expect(await userRepo.getSaveCount()).equal(1);
+    expect(result.isSuccess).toBeTruthy();
+    expect((await userRepo.findAll()).length).toBe(1);
+  });
+
+  test('Email Already in use', async () => {
+    const userList = await createMockUser(1);
+    const userRepo = REPOSITORIES['UserRepository']();
+
+    await userRepo.saveMany(userList);
+
+    const createUser = new CreateUser(userRepo, hasher);
+
+    const result = await createUser.execute({
+      email: userList[0].getEmail().getValue(),
+      password: 'John1234',
+    });
+
+    expect(result.isFailure).toBeTruthy();
+    expect(result).instanceOf(EmailAlredyRegisteredError);
+    expect((await userRepo.findAll()).length).toBe(1);
+  });
+
+  test('Id Already in use', async () => {
+    const userList = await createMockUser(1);
+    const userRepo = REPOSITORIES['UserRepository']();
+    await userRepo.saveMany(userList);
+
+    const createUser = new CreateUser(userRepo, hasher);
+
+    const result = await createUser.execute({
+      id: userList[0].id,
+      email: 'henry@gmail.com',
+      password: 'Henry1234',
+    });
+
+    expect(result.isFailure).toBeTruthy();
+    expect(result).instanceOf(IdAlredyRegisteredError);
+    expect((await userRepo.findAll()).length).toBe(1);
   });
 });

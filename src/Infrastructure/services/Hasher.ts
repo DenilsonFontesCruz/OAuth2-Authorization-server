@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { IHasher } from '../tools/IHasher';
+import { IHasher } from '../IServices/IHasher';
 
 export class Hasher implements IHasher {
   readonly salt: number;
@@ -17,8 +17,12 @@ export class Hasher implements IHasher {
     }
   }
 
-  //eslint-disable-next-line
-  compare(text: string, hashedText: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async compare(text: string, hashedText: string): Promise<boolean> {
+    try {
+      return await bcrypt.compare(text, hashedText);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
