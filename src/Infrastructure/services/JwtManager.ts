@@ -11,7 +11,7 @@ export class JwtManager<payloadT> implements IJwtManager<payloadT> {
   sign(payload: payloadT, duration?: number): string {
     if (duration) {
       return jwt.sign({ payload }, this._secret, {
-        expiresIn: duration,
+        expiresIn: `${duration}ms`,
       });
     }
     return jwt.sign({ payload }, this._secret);

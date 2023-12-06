@@ -106,14 +106,14 @@ export class ClientLogin
 
     const acessToken = this.jwtManager.sign(
       user.id,
-      this.tokensDuration.acessTokenDuration,
+      this.tokensDuration.acessTokenDuration * 1000,
     );
     const refreshToken = crypto.randomBytes(16).toString('hex');
 
     this.cacheManager.set(
       refreshToken,
       user.id.toString(),
-      this.tokensDuration.refreshTokenDuration,
+      this.tokensDuration.refreshTokenDuration * 1000,
     );
 
     return Result.ok<ClientLoginOutputBody>({ acessToken, refreshToken });

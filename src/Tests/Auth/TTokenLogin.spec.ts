@@ -21,7 +21,10 @@ describe('Token Login', async () => {
       },
     ]);
 
-    const tokenLogin = new TokenLogin(jwtManager, cacheManager);
+    const tokenLogin = new TokenLogin(jwtManager, cacheManager, {
+      acessTokenDuration: 100,
+      refreshTokenDuration: 100,
+    });
 
     const result = await tokenLogin.execute({
       refreshToken: 'RefreshToken',
@@ -42,7 +45,10 @@ describe('Token Login', async () => {
   });
 
   test('Invalid Token', async () => {
-    const tokenLogin = new TokenLogin(jwtManager, cacheManager);
+    const tokenLogin = new TokenLogin(jwtManager, cacheManager, {
+      acessTokenDuration: 100,
+      refreshTokenDuration: 100,
+    });
 
     const result = await tokenLogin.execute({
       refreshToken: 'RefreshToken',
@@ -59,7 +65,10 @@ describe('Token Login', async () => {
         value: '',
       },
     ]);
-    const tokenLogin = new TokenLogin(jwtManager, cacheManager);
+    const tokenLogin = new TokenLogin(jwtManager, cacheManager, {
+      acessTokenDuration: 100,
+      refreshTokenDuration: 100,
+    });
 
     const result = await tokenLogin.execute({
       refreshToken: 'RefreshToken',

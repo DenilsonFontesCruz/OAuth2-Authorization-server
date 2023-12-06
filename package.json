@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts --env=development --port=9102",
     "start": "ts-node ./src/index.ts --env=production --port=9120",
-    "test": "vitest -ui"
+    "test": "vitest"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

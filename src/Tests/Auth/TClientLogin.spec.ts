@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { CreateUser } from '../../Application/useCases/CreateUser';
 import {
   ClientLogin,
   ClientLoginOutputBody,
@@ -29,6 +28,10 @@ describe('Client Login', async () => {
       hasher,
       jwtManager,
       cacheManager,
+      {
+        acessTokenDuration: 100,
+        refreshTokenDuration: 100,
+      },
     );
 
     const result = await clientLogin.execute({
@@ -52,6 +55,10 @@ describe('Client Login', async () => {
       hasher,
       jwtManager,
       cacheManager,
+      {
+        acessTokenDuration: 100,
+        refreshTokenDuration: 100,
+      },
     );
 
     const result = await clientLogin.execute({
@@ -69,6 +76,10 @@ describe('Client Login', async () => {
       hasher,
       jwtManager,
       cacheManager,
+      {
+        acessTokenDuration: 100,
+        refreshTokenDuration: 100,
+      },
     );
 
     const result = await clientLogin.execute({

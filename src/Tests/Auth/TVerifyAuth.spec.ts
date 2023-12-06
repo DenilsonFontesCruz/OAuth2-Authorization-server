@@ -7,7 +7,6 @@ import {
   TokenInvalid,
 } from '../../Application/useCases/VerifyAuth';
 import { TCacheManager } from '../Mock/Services/TCacheManager';
-import { sleep } from '../Mock/tools/SleepFunction';
 
 describe('Verify Auth', async () => {
   const jwtManager = new JwtManager<Identifier>('secret');
@@ -18,7 +17,7 @@ describe('Verify Auth', async () => {
     const token = jwtManager.sign('ID');
 
     const result = await verifyAuth.execute({
-      token,
+      acessToken: token,
     });
 
     expect(result.isSuccess).toBeTruthy();
@@ -34,7 +33,7 @@ describe('Verify Auth', async () => {
     cacheManager.set(token, '');
 
     const result = await verifyAuth.execute({
-      token,
+      acessToken: token,
     });
 
     expect(result.isFailure).toBeTruthy();
@@ -44,10 +43,8 @@ describe('Verify Auth', async () => {
   test('Expired token', async () => {
     const token = jwtManager.sign('ID', 1);
 
-    await sleep(3);
-
     const result = await verifyAuth.execute({
-      token,
+      acessToken: token,
     });
 
     expect(result.isFailure).toBeTruthy();

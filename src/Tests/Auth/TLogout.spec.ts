@@ -3,6 +3,7 @@ import { VerifyAuth } from '../../Application/useCases/VerifyAuth';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Logout } from '../../Application/useCases/Logout';
 import { TestDependencies } from '../../config/Dependencies/TestDependencies';
+import crypto from 'crypto';
 
 const { SERVICES } = TestDependencies;
 
@@ -13,13 +14,18 @@ describe('Logout', async () => {
   const logout = new Logout(verifyAuth, cacheManager);
 
   test('Acess Token', async () => {
-    const token = jwtManager.sign('ID');
+    const acessToken = jwtManager.sign('ID');
+    const refreshToken = crypto.randomBytes(16).toString('hex');
+
+    await cacheManager.set(refreshToken, 'ID');
 
     const result = await logout.execute({
-      token,
+      refreshToken,
+      acessToken,
     });
 
     expect(result.isSuccess).toBeTruthy();
-    expect(await cacheManager.contain(token)).toBeTruthy();
+    expect(await cacheManager.contain(acessToken)).toBeTruthy();
+    expect(await cacheManager.contain(refreshToken)).toBeFalsy();
   });
 });

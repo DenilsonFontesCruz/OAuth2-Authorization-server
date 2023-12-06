@@ -1,4 +1,3 @@
-import { Nothing } from '../../../../Domain-Driven-Design-Types/Generics';
 import {
   ICacheManager,
   KeyValue,
@@ -21,7 +20,9 @@ export class TCacheManager implements ICacheManager {
       return item.key === key;
     });
 
-    this.cache.splice(index, 1);
+    if (index > -1) {
+      this.cache.splice(index, 1);
+    }
   }
 
   async set(key: string, value: string, duration?: number): Promise<void> {

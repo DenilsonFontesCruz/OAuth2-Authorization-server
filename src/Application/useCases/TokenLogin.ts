@@ -80,7 +80,7 @@ export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
 
     const acessToken = this.jwtManager.sign(
       item.value,
-      this.tokensDuration.acessTokenDuration,
+      this.tokensDuration.acessTokenDuration * 1000,
     );
 
     const refreshToken = crypto.randomBytes(16).toString('hex');
@@ -88,7 +88,7 @@ export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
     this.cacheManager.set(
       refreshToken,
       item.value.toString(),
-      this.tokensDuration.refreshTokenDuration,
+      this.tokensDuration.refreshTokenDuration * 1000,
     );
 
     return Result.ok<TokenLoginOutputBody>({ acessToken, refreshToken });
