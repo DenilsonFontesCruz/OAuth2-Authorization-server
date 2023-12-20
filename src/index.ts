@@ -1,51 +1,13 @@
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import { DevDependencies } from './config/Dependencies/DevDependencies';
 import { Server } from './Server';
-import { ProdDependencies } from './config/Dependencies/ProdDependencies';
-import { configDotenv } from 'dotenv';
-import path from 'path';
-import { UseCasesManager } from './config/UseCasesManager';
+import { ProdDependencies } from './Config/Dependencies/ProdDependencies';
+import { UseCasesManager } from './Config/UseCasesManager';
 
-const argv = yargs(hideBin(process.argv)).parseSync();
+start();
 
-if (!argv['env']) {
-  process.exit();
-}
-
-if (!argv['port']) {
-  process.exit();
-}
-
-const DependenciesManager: {
-  development: typeof DevDependencies;
-  production: typeof ProdDependencies;
-} = {
-  development: DevDependencies,
-  production: ProdDependencies,
-};
-
-start(argv['env'] as string, Number(argv['port']));
-
-async function start(env: string, port: number): Promise<void> {
+async function start(): Promise<void> {
   try {
-    const manager = Object.entries(DependenciesManager).find((entry) => {
-      if (env == entry[0]) {
-        return true;
-      }
-      return false;
-    });
-
-    if (!manager) {
-      console.error('Env not found');
-      process.exit();
-    }
-
-    configDotenv({
-      path: path.join(__dirname, `/config/Env/.env.${env}`),
-    });
-
     const {
+      SERVER_PORT,
       MONGO_HOST,
       REDIS_HOST,
       REDIS_PORT,
@@ -55,7 +17,7 @@ async function start(env: string, port: number): Promise<void> {
       REFRESH_TOKEN_DURATION,
     } = process.env;
 
-    const dependenciesManager = new manager[1]({
+    const dependenciesManager = new ProdDependencies({
       database: {
         mongo: {
           host: String(MONGO_HOST),
@@ -84,7 +46,7 @@ async function start(env: string, port: number): Promise<void> {
       refreshTokenDuration: Number(REFRESH_TOKEN_DURATION),
     });
 
-    const server = new Server(useCasesInstances, port);
+    const server = new Server(useCasesInstances, Number(SERVER_PORT));
 
     await server.start();
   } catch (err) {

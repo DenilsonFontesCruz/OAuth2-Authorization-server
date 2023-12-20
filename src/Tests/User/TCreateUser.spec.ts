@@ -14,7 +14,7 @@ import {
   IdAlredyRegisteredError,
 } from '../../Application/useCases/CreateUser';
 import { createMockUser } from '../Mock/tools/CreateMockUser';
-import { TestDependencies } from '../../config/Dependencies/TestDependencies';
+import { TestDependencies } from '../../Config/Dependencies/TestDependencies';
 
 const { SERVICES, REPOSITORIES } = TestDependencies;
 

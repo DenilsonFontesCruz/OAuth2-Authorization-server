@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { VerifyAuth } from '../../Application/useCases/VerifyAuth';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Logout } from '../../Application/useCases/Logout';
-import { TestDependencies } from '../../config/Dependencies/TestDependencies';
+import { TestDependencies } from '../../Config/Dependencies/TestDependencies';
 import crypto from 'crypto';
 
 const { SERVICES } = TestDependencies;

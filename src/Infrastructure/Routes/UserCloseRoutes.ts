@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { IRoutes } from './IRoutes';
-import { IUseCasesInstances } from '../../config/UseCasesManager';
+import { IUseCasesInstances } from '../../Config/UseCasesManager';
 
 export class UserCloseRoutes implements IRoutes {
   private useCasesInstances: IUseCasesInstances;

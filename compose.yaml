@@ -4,8 +4,10 @@ services:
     ports:
       - 9102:9102
     environment:
-      - script=dev
-      - port=9102
+      - SCRIPT=nodemon
+      - SERVER_PORT=9102
+    env_file:
+      - ./src/config/Env/.env.development
     depends_on:
       mongo:
         condition: service_healthy

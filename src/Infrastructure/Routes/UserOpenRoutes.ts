@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { IRoutes } from './IRoutes';
-import path from 'path';
-import { IUseCasesInstances } from '../../config/UseCasesManager';
+import { IUseCasesInstances } from '../../Config/UseCasesManager';
 
 export class UserOpenRoutes implements IRoutes {
   private useCasesInstances: IUseCasesInstances;
@@ -38,7 +37,7 @@ export class UserOpenRoutes implements IRoutes {
       }
     });
 
-    route.get('/client-login', async (req, res) => {
+    route.get('/login', async (req, res) => {
       return res.redirect('/web/login');
     });
 

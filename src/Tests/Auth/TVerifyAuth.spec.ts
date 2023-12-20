@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { JwtManager } from '../../Infrastructure/Services/JwtManager';
+import { JwtManager } from '../../Infrastructure/Services/JwtManagerJWT';
 import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import {
   VerifyAuth,

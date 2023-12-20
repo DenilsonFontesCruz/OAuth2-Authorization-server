@@ -9,7 +9,7 @@ import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
 import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
 import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
 import crypto from 'crypto';
-import { ITokensDuration } from '../../config/UseCasesManager';
+import { ITokensDuration } from '../../Config/UseCasesManager';
 
 export class DataNotProvided extends Result<DomainError> {
   private constructor(message: string) {

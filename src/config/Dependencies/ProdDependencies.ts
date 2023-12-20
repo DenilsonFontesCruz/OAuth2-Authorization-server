@@ -8,8 +8,8 @@ import {
 } from '../../Infrastructure/Database/Redis';
 import { UserRepositoryMongo } from '../../Infrastructure/Repository/UserRepositoryMongo';
 import { CacheManagerRedis } from '../../Infrastructure/Services/CacheManagerRedis';
-import { Hasher } from '../../Infrastructure/Services/Hasher';
-import { JwtManager } from '../../Infrastructure/Services/JwtManager';
+import { Hasher } from '../../Infrastructure/Services/HasherBCrypt';
+import { JwtManager } from '../../Infrastructure/Services/JwtManagerJWT';
 import { IDependencies, IDependenciesManager } from './IDependencies';
 
 interface DependenciesConfig {

@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import { UserCloseRoutes } from './Infrastructure/Routes/UserCloseRoutes';
-import { IUseCasesInstances } from './config/UseCasesManager';
+import { IUseCasesInstances } from './Config/UseCasesManager';
 import getBearerToken from './Infrastructure/Middlewares/GetBearerToken';
 
 export class Server {

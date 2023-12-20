@@ -6,8 +6,8 @@
   "author": "Denilson Fontes <defontescruz@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon ./src/index.ts --env=development --port=9102",
-    "start": "ts-node ./src/index.ts --env=production --port=9120",
+    "nodemon": "nodemon ./src/index.ts",
+    "start": "ts-node ./src/index.ts",
     "test": "vitest"
   },
   "dependencies": {
