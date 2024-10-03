@@ -1,39 +1,13 @@
-import { ClientErrorCodes } from '../../../Domain-Driven-Design-Types/ResponseCodes';
-import { Result } from '../../../Domain-Driven-Design-Types/Result';
-import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
-import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
-import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
-import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
-import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
+import { Result } from '../../../../Utils/Result';
+import { IUseCase } from '../../../../Utils/application/IUseCase';
+import { DomainError } from '../../../../Utils/domain/DomainError';
+import { IJwtManager } from '../../../Infrastructure/IServices/IJwtManager';
+import { Checker } from '../../../../Utils/Checker';
+import { ICacheManager } from '../../../Infrastructure/IServices/ICacheManager';
 import crypto from 'crypto';
-import { ITokensDuration } from '../../Config/UseCasesManager';
-
-export class TokenNotProvided extends Result<DomainError> {
-  private constructor(message: string) {
-    super(false, {
-      message,
-      code: ClientErrorCodes.ExpectationFailed,
-    });
-  }
-
-  public static create(message: string): TokenNotProvided {
-    return new TokenNotProvided(message);
-  }
-}
-
-export class TokenInvalid extends Result<DomainError> {
-  private constructor(message: string) {
-    super(false, {
-      message,
-      code: ClientErrorCodes.Unauthorized,
-    });
-  }
-
-  public static create(message: string): TokenInvalid {
-    return new TokenInvalid(message);
-  }
-}
+import { ITokensDuration } from '../../../Config/UseCasesManager';
+import UserTokenPayload from '../../../../Utils/UserTokenPayload';
+import { TokenInvalid, TokenNotProvided } from '../../errors/ClientErrors';
 
 interface TokenLoginInput {
   refreshToken: string;
@@ -47,12 +21,12 @@ export interface TokenLoginOutputBody {
 type TokenLoginOutput = Result<DomainError> | Result<TokenLoginOutputBody>;
 
 export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
-  private jwtManager: IJwtManager<Identifier>;
+  private jwtManager: IJwtManager<UserTokenPayload>;
   private cacheManager: ICacheManager;
   private tokensDuration: ITokensDuration;
 
   constructor(
-    jwtManager: IJwtManager<Identifier>,
+    jwtManager: IJwtManager<UserTokenPayload>,
     cacheManager: ICacheManager,
     tokensDuration: ITokensDuration,
   ) {
@@ -78,8 +52,10 @@ export class TokenLogin implements IUseCase<TokenLoginInput, TokenLoginOutput> {
 
     await this.cacheManager.remove(input.refreshToken);
 
+    const payload = JSON.parse(item.value);
+
     const acessToken = this.jwtManager.sign(
-      item.value,
+      payload,
       this.tokensDuration.acessTokenDuration * 1000,
     );
 

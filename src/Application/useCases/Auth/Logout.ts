@@ -1,7 +1,7 @@
-import { Result } from '../../../Domain-Driven-Design-Types/Result';
-import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
-import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
-import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
+import { Result } from '../../../../Utils/Result';
+import { IUseCase } from '../../../../Utils/application/IUseCase';
+import { DomainError } from '../../../../Utils/domain/DomainError';
+import { ICacheManager } from '../../../Infrastructure/IServices/ICacheManager';
 import { VerifyAuth } from './VerifyAuth';
 
 interface LogoutInput {

@@ -8,13 +8,10 @@ import {
   Password,
 } from '../../Domain/aggregates/userAggregate/valueObjects/Password';
 import { stringGeneratorBySize } from '../Mock/tools/stringGeneratorBySize';
-import {
-  CreateUser,
-  EmailAlredyRegisteredError,
-  IdAlredyRegisteredError,
-} from '../../Application/useCases/CreateUser';
+import { CreateUser } from '../../Application/useCases/User/CreateUser';
 import { createMockUser } from '../Mock/tools/CreateMockUser';
 import { TestDependencies } from '../../Config/Dependencies/TestDependencies';
+import { EmailAlredyRegisteredError, IdAlredyRegisteredError } from '../../Application/errors/ClientErrors';
 
 const { SERVICES, REPOSITORIES } = TestDependencies;
 

@@ -1,23 +1,21 @@
 import { describe, expect, test } from 'vitest';
-import { TokenLoginOutputBody } from '../../Application/useCases/TokenLogin';
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
-import {
-  TokenInvalid,
-  TokenLogin,
-} from '../../Application/useCases/TokenLogin';
+import { TokenLoginOutputBody } from '../../Application/useCases/Auth/TokenLogin';
+import { TokenLogin } from '../../Application/useCases/Auth/TokenLogin';
 import { TestDependencies } from '../../Config/Dependencies/TestDependencies';
+import { TokenInvalid } from '../../Application/errors/ClientErrors';
+import { UserTokenPayload } from '../../../Utils/UserTokenPayload';
 
 const { SERVICES } = TestDependencies;
 
 describe('Token Login', async () => {
-  const jwtManager = SERVICES['JwtManager']<Identifier>('secret');
+  const jwtManager = SERVICES['JwtManager']<UserTokenPayload>('secret');
   const cacheManager = SERVICES['CacheManager']();
 
   test('Correct data', async () => {
     const cacheManager = SERVICES['CacheManager']([
       {
         key: 'RefreshToken',
-        value: 'ID',
+        value: JSON.stringify({ id: 'ID', permissions: ['USER'] }),
       },
     ]);
 
@@ -41,7 +39,7 @@ describe('Token Login', async () => {
 
     const { payload } = jwtManager.verify(acessToken);
 
-    expect(payload).toBe('ID');
+    expect(payload).toStrictEqual({ id: 'ID', permissions: ['USER'] });
   });
 
   test('Invalid Token', async () => {

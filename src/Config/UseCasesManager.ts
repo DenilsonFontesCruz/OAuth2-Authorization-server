@@ -1,8 +1,8 @@
-import { ClientLogin } from '../Application/useCases/ClientLogin';
-import { CreateUser } from '../Application/useCases/CreateUser';
-import { Logout } from '../Application/useCases/Logout';
-import { TokenLogin } from '../Application/useCases/TokenLogin';
-import { VerifyAuth } from '../Application/useCases/VerifyAuth';
+import { ClientLogin } from '../Application/useCases/Auth/ClientLogin';
+import { CreateUser } from '../Application/useCases/User/CreateUser';
+import { Logout } from '../Application/useCases/Auth/Logout';
+import { TokenLogin } from '../Application/useCases/Auth/TokenLogin';
+import { VerifyAuth } from '../Application/useCases/Auth/VerifyAuth';
 import { IDependencies } from './Dependencies/IDependencies';
 
 export interface ITokensDuration {

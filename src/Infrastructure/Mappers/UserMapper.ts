@@ -1,5 +1,5 @@
 import { HydratedDocument } from 'mongoose';
-import { IMapper } from '../../../Domain-Driven-Design-Types/infrastructure/IMapper';
+import { IMapper } from '../../../Utils/infrastructure/IMapper';
 import { User } from '../../Domain/aggregates/userAggregate/User';
 import { Email } from '../../Domain/aggregates/userAggregate/valueObjects/Email';
 import { IUserModel, UserModel } from '../Models/UserModel';

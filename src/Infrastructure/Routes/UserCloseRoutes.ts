@@ -16,8 +16,6 @@ export class UserCloseRoutes implements IRoutes {
       try {
         const { refreshToken, acessToken } = req.body;
 
-        console.log(acessToken);
-
         const result = await this.useCasesInstances.logout.execute({
           acessToken,
           refreshToken,

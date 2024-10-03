@@ -1,8 +1,8 @@
-import { Checker } from '../../../../../Domain-Driven-Design-Types/Checker';
-import { ClientErrorCodes } from '../../../../../Domain-Driven-Design-Types/ResponseCodes';
-import { Result } from '../../../../../Domain-Driven-Design-Types/Result';
-import { DomainError } from '../../../../../Domain-Driven-Design-Types/domain/DomainError';
-import { ValueObject } from '../../../../../Domain-Driven-Design-Types/domain/ValueObject';
+import { Checker } from '../../../../../Utils/Checker';
+import { ClientErrorCodes } from '../../../../../Utils/constantes/ResponseCodes';
+import { Result } from '../../../../../Utils/Result';
+import { DomainError } from '../../../../../Utils/domain/DomainError';
+import { ValueObject } from '../../../../../Utils/domain/ValueObject';
 
 interface PasswordProps {
   password: string;

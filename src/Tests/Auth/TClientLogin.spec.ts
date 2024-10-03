@@ -2,21 +2,24 @@ import { describe, expect, test } from 'vitest';
 import {
   ClientLogin,
   ClientLoginOutputBody,
-  EmailNotFoundError,
-  PasswordIncorrectError,
-} from '../../Application/useCases/ClientLogin';
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
+} from '../../Application/useCases/Auth/ClientLogin';
 import {
   createMockUser,
   getMockUserRawPassword,
 } from '../Mock/tools/CreateMockUser';
 import { TestDependencies } from '../../Config/Dependencies/TestDependencies';
+import { UserTokenPayload } from '../../../Utils/UserTokenPayload';
+import {
+  EmailNotFoundError,
+  PasswordIncorrectError,
+} from '../../Application/errors/ClientErrors';
 
 const { SERVICES, REPOSITORIES } = TestDependencies;
 
 describe('Client Login', async () => {
-  const jwtManager = SERVICES['JwtManager']<Identifier>('secret');
+  const jwtManager = SERVICES['JwtManager']<UserTokenPayload>('secret');
   const userRepo = REPOSITORIES['UserRepository']();
+  const permissionRepo = REPOSITORIES['PermissionRepository']();
   const hasher = SERVICES['Hasher'](1);
   const userList = await createMockUser(1, hasher);
   await userRepo.saveMany(userList);
@@ -25,6 +28,7 @@ describe('Client Login', async () => {
   test('Correct data', async () => {
     const clientLogin = new ClientLogin(
       userRepo,
+      permissionRepo,
       hasher,
       jwtManager,
       cacheManager,
@@ -52,6 +56,7 @@ describe('Client Login', async () => {
   test('Wrong email', async () => {
     const clientLogin = new ClientLogin(
       userRepo,
+      permissionRepo,
       hasher,
       jwtManager,
       cacheManager,
@@ -73,6 +78,7 @@ describe('Client Login', async () => {
   test('Wrong password', async () => {
     const clientLogin = new ClientLogin(
       userRepo,
+      permissionRepo,
       hasher,
       jwtManager,
       cacheManager,
