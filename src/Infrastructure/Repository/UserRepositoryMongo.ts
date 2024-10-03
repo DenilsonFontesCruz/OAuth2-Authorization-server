@@ -1,5 +1,5 @@
-import { Checker } from '../../../Domain-Driven-Design-Types/Checker';
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
+import { Checker } from '../../../Utils/Checker';
+import { Identifier } from '../../../Utils/Generics';
 import { IUserRepository } from '../../Application/repositories/IUserRepository';
 import { User } from '../../Domain/aggregates/userAggregate/User';
 import { userMapper } from '../Mappers/UserMapper';

@@ -1,4 +1,4 @@
-import { Identifier } from '../../../../Domain-Driven-Design-Types/Generics';
+import { Identifier } from '../../../../Utils/Generics';
 import { IUserRepository } from '../../../Application/repositories/IUserRepository';
 import { User } from '../../../Domain/aggregates/userAggregate/User';
 

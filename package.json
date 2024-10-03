@@ -8,7 +8,7 @@
   "scripts": {
     "nodemon": "nodemon ./src/index.ts",
     "start": "ts-node ./src/index.ts",
-    "test": "vitest"
+    "test": "vitest --ui"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

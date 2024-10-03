@@ -1,6 +1,6 @@
-import { IEventDispatcher } from '../../Domain-Driven-Design-Types/application/IEventDispatcher';
-import { IEventHandler } from '../../Domain-Driven-Design-Types/application/IEventHandler';
-import { DomainEvent } from '../../Domain-Driven-Design-Types/domain/DomainEvent';
+import { IEventDispatcher } from '../../Utils/application/IEventDispatcher';
+import { IEventHandler } from '../../Utils/application/IEventHandler';
+import { DomainEvent } from '../../Utils/domain/DomainEvent';
 
 export class EventDispatcher implements IEventDispatcher {
   private eventHandlers: { [eventName: string]: IEventHandler[] } = {};

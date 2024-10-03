@@ -1,3 +1,4 @@
+import { IPermissionRepository } from '../../Application/repositories/IPermissionRepository';
 import { IUserRepository } from '../../Application/repositories/IUserRepository';
 import {
   ICacheManager,
@@ -7,6 +8,7 @@ import { IHasher } from '../../Infrastructure/IServices/IHasher';
 import { IJwtManager } from '../../Infrastructure/IServices/IJwtManager';
 import { Hasher } from '../../Infrastructure/Services/HasherBCrypt';
 import { JwtManager } from '../../Infrastructure/Services/JwtManagerJWT';
+import { TPermissionRepository } from '../../Tests/Mock/Repositories/TPermissionRepository';
 import { TUserRepository } from '../../Tests/Mock/Repositories/TUserRepository';
 import { TCacheManager } from '../../Tests/Mock/Services/TCacheManager';
 
@@ -23,6 +25,7 @@ interface IServices {
 
 interface IRepositories {
   UserRepository: () => IUserRepository;
+  PermissionRepository: () => IPermissionRepository;
 }
 
 export const TestDependencies: IDependencies = {
@@ -33,5 +36,6 @@ export const TestDependencies: IDependencies = {
   },
   REPOSITORIES: {
     UserRepository: () => new TUserRepository(),
+    PermissionRepository: () => new TPermissionRepository(),
   },
 };

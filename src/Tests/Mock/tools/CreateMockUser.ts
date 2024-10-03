@@ -22,10 +22,10 @@ export async function createMockUser(
     }
 
     const user = User.create({
-      id: index.toString(),
       email: email.getValue() as Email,
       password: password,
-    });
+      permissionsId: [],
+    }, index.toString());
 
     if (user.isFailure) {
       console.error('CreateMockUser email fail');

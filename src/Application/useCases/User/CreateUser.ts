@@ -1,40 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
-import { ClientErrorCodes } from '../../../Domain-Driven-Design-Types/ResponseCodes';
-import { Result } from '../../../Domain-Driven-Design-Types/Result';
-import { IUseCase } from '../../../Domain-Driven-Design-Types/application/IUseCase';
-import { DomainError } from '../../../Domain-Driven-Design-Types/domain/DomainError';
-import { User } from '../../Domain/aggregates/userAggregate/User';
-import { Email } from '../../Domain/aggregates/userAggregate/valueObjects/Email';
-import { Password } from '../../Domain/aggregates/userAggregate/valueObjects/Password';
-import { IUserRepository } from '../repositories/IUserRepository';
-import { IHasher } from '../../Infrastructure/IServices/IHasher';
-
-export class EmailAlredyRegisteredError extends Result<DomainError> {
-  private constructor(message: string) {
-    super(false, {
-      message,
-      code: ClientErrorCodes.Conflict,
-    });
-  }
-
-  public static create(message: string): EmailAlredyRegisteredError {
-    return new EmailAlredyRegisteredError(message);
-  }
-}
-
-export class IdAlredyRegisteredError extends Result<DomainError> {
-  private constructor(message: string) {
-    super(false, {
-      message,
-      code: ClientErrorCodes.Conflict,
-    });
-  }
-
-  public static create(message: string): IdAlredyRegisteredError {
-    return new IdAlredyRegisteredError(message);
-  }
-}
+import { Identifier } from '../../../../Utils/Generics';
+import { Result } from '../../../../Utils/Result';
+import { IUseCase } from '../../../../Utils/application/IUseCase';
+import { DomainError } from '../../../../Utils/domain/DomainError';
+import { User } from '../../../Domain/aggregates/userAggregate/User';
+import { Email } from '../../../Domain/aggregates/userAggregate/valueObjects/Email';
+import { Password } from '../../../Domain/aggregates/userAggregate/valueObjects/Password';
+import { IUserRepository } from '../../repositories/IUserRepository';
+import { IHasher } from '../../../Infrastructure/IServices/IHasher';
+import { EmailAlredyRegisteredError, IdAlredyRegisteredError } from '../../errors/ClientErrors';
 
 interface CreateUserInput {
   id?: Identifier;
@@ -84,10 +58,10 @@ export class CreateUser implements IUseCase<CreateUserInput, CreateUserOutput> {
       );
 
       const userOrError = User.create({
-        id: input.id ?? uuidv4(),
         email: emailOrError.getValue() as Email,
         password: hashPassword,
-      });
+        permissionsId: []
+      }, input.id ?? uuidv4());
 
       if (userOrError.isFailure) {
         return userOrError.errorValue() as Result<DomainError>;

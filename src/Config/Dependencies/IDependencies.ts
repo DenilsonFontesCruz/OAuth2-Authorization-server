@@ -1,4 +1,4 @@
-import { Identifier } from '../../../Domain-Driven-Design-Types/Generics';
+import { Identifier } from '../../../Utils/Generics';
 import { IUserRepository } from '../../Application/repositories/IUserRepository';
 import { ICacheManager } from '../../Infrastructure/IServices/ICacheManager';
 import { IHasher } from '../../Infrastructure/IServices/IHasher';

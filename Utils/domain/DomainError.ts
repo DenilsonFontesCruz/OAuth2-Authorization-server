@@ -1,4 +1,4 @@
-import { ResponseCodes } from '../ResponseCodes';
+import { ResponseCodes } from '../constantes/ResponseCodes';
 
 export abstract class DomainError {
   public readonly message: string;
